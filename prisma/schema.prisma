@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Student {
+  id            String         @id @default(uuid())
+  nama          String
+  kelas         String
+  hadir         Boolean        @default(false)
+  sudah_memilih Boolean        @default(false)
+  loginRequests LoginRequest[]
+  vote          Vote?
+
+  @@map("students")
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  VOTED
+}
+
+model LoginRequest {
+  id         String        @id @default(uuid())
+  student_id String
+  student    Student       @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  status     RequestStatus @default(PENDING)
+  created_at DateTime      @default(now())
+
+  @@map("login_requests")
+}
+
+model Candidate {
+  id         String @id @default(uuid())
+  nomor_urut Int    @unique
+  nama       String
+  foto_url   String
+  votes      Vote[]
+
+  @@map("candidates")
+}
+
+model Vote {
+  id           String    @id @default(uuid())
+  student_id   String    @unique
+  candidate_id String
+  student      Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  candidate    Candidate @relation(fields: [candidate_id], references: [id], onDelete: Restrict)
+  created_at   DateTime  @default(now())
+
+  @@map("votes")
+}
+
+enum ElectionStatus {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+model ElectionSetting {
+  id              String         @id @default(uuid())
+  election_status ElectionStatus @default(DRAFT)
+  started_at      DateTime?
+  ended_at        DateTime?
+
+  @@map("election_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actor      String
+  action     String
+  created_at DateTime @default(now())
+
+  @@map("audit_logs")
+}

@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/* Tailwind v4 custom border utility */
+@utility border-3 {
+  border-width: 3px;
+}
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f0f11;
+  --primary: #e11d48; /* Merah Bold */
+  --primary-hover: #be123c;
+  --card-bg: #ffffff;
+  --border-color: #0f0f11;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Custom Neo-brutalism Utilities */
+.neo-box {
+  background-color: var(--card-bg);
+  border: 3px solid var(--border-color);
+  box-shadow: 4px 4px 0px 0px var(--border-color);
+  transition: all 0.15s ease-in-out;
+}
+
+.neo-box:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--border-color);
+}
+
+.neo-btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+  border: 3px solid var(--border-color);
+  box-shadow: 3px 3px 0px 0px var(--border-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.neo-btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px var(--border-color);
+}
+
+.neo-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px var(--border-color);
+}
+
+.neo-btn-secondary {
+  background-color: #ffffff;
+  color: var(--foreground);
+  border: 3px solid var(--border-color);
+  box-shadow: 3px 3px 0px 0px var(--border-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.neo-btn-secondary:hover {
+  background-color: #f4f4f5;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px var(--border-color);
+}
+
+.neo-btn-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px var(--border-color);
+}
+
+.neo-input {
+  border: 3px solid var(--border-color);
+  background-color: #ffffff;
+  color: var(--foreground);
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+}
+
+.neo-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 3px 3px 0px 0px var(--border-color);
+}
+
