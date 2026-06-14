@@ -617,8 +617,37 @@ export default function AdminDashboard() {
                         type="text"
                         value={candidateForm.foto_url}
                         onChange={(e) => setCandidateForm({ ...candidateForm, foto_url: e.target.value })}
-                        className="w-full neo-input text-sm rounded-none"
+                        className="w-full neo-input text-sm rounded-none mb-3"
                         placeholder="/images/kandidat1.jpg"
+                      />
+                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">Atau Unggah Foto Baru</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          
+                          try {
+                            const res = await fetch("/api/admin/candidates/upload", {
+                              method: "POST",
+                              body: formData,
+                            });
+                            const data = await res.json();
+                            if (res.ok) {
+                              setCandidateForm((prev) => ({ ...prev, foto_url: data.url }));
+                              triggerAlert("success", "Foto berhasil diunggah.");
+                            } else {
+                              triggerAlert("error", data.message || "Gagal mengunggah foto.");
+                            }
+                          } catch {
+                            triggerAlert("error", "Kesalahan koneksi saat mengunggah foto.");
+                          }
+                        }}
+                        className="w-full bg-slate-50 border-2 border-black p-2 text-xs font-bold focus:outline-none"
                       />
                     </div>
 

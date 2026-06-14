@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { UserCheck, UserX, Users, LogOut, Search } from "lucide-react";
+import { UserCheck, UserX, Users, LogOut, Search, RefreshCw } from "lucide-react";
 
 interface Student {
   id: string;
   nama: string;
   kelas: string;
   sudah_memilih: boolean;
+  hadir?: boolean;
 }
 
 interface LoginRequest {
@@ -50,8 +51,54 @@ export default function PanitiaDashboard() {
   const [classStats, setClassStats] = useState<ClassStat[]>([]);
   const [searchClass, setSearchClass] = useState("");
 
+  // Tab Panel Kanan ("stats" | "non_voters")
+  const [rightTab, setRightTab] = useState<"stats" | "non_voters">("stats");
+
+  // State Siswa Belum Memilih
+  const [nonVoters, setNonVoters] = useState<Student[]>([]);
+  const [nonVotersSearch, setNonVotersSearch] = useState("");
+  const [nonVotersClass, setNonVotersClass] = useState("");
+  const [nonVotersPage, setNonVotersPage] = useState(1);
+  const [nonVotersTotalPages, setNonVotersTotalPages] = useState(1);
+  const [nonVotersTotalCount, setNonVotersTotalCount] = useState(0);
+  const [loadingNonVoters, setLoadingNonVoters] = useState(false);
+
   const queueTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const statsTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const nonVotersDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const fetchNonVoters = useCallback(async (page = 1, search = nonVotersSearch, classFilter = nonVotersClass) => {
+    setLoadingNonVoters(true);
+    try {
+      const res = await fetch(`/api/panitia/non-voters?page=${page}&limit=12&search=${encodeURIComponent(search)}&kelas=${encodeURIComponent(classFilter)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setNonVoters(data.students);
+        setNonVotersTotalPages(data.totalPages);
+        setNonVotersTotalCount(data.total);
+        setNonVotersPage(data.page);
+      }
+    } catch (err) {
+      console.error("Gagal mengambil data siswa belum memilih", err);
+    } finally {
+      setLoadingNonVoters(false);
+    }
+  }, [nonVotersSearch, nonVotersClass]);
+
+  // Hook Polling & Debounce untuk Siswa Belum Memilih
+  useEffect(() => {
+    if (!role || rightTab !== "non_voters") return;
+
+    if (nonVotersDebounceRef.current) clearTimeout(nonVotersDebounceRef.current);
+
+    nonVotersDebounceRef.current = setTimeout(() => {
+      fetchNonVoters(nonVotersPage, nonVotersSearch, nonVotersClass);
+    }, 300);
+
+    return () => {
+      if (nonVotersDebounceRef.current) clearTimeout(nonVotersDebounceRef.current);
+    };
+  }, [role, rightTab, nonVotersPage, nonVotersSearch, nonVotersClass, fetchNonVoters]);
 
   // 1. Verifikasi Autentikasi Sesi Panitia
   const checkAuth = useCallback(async () => {
@@ -332,86 +379,227 @@ export default function PanitiaDashboard() {
         </section>
 
         {/* ==============================================
-        // PANEL KANAN: Statistik Kehadiran (7 Kolom)
+        // PANEL KANAN: Statistik Kehadiran & Siswa Belum Memilih (7 Kolom)
         // ============================================== */}
-        <section className="lg:col-span-7 space-y-8">
+        <section className="lg:col-span-7 space-y-6">
+          
+          {/* Tab Header Panel Kanan */}
+          <div className="flex border-b-4 border-black">
+            <button
+              onClick={() => setRightTab("stats")}
+              className={`flex-1 py-3 px-6 text-center font-black uppercase text-xs tracking-wider border-t-4 border-x-4 border-black transition-colors ${
+                rightTab === "stats"
+                  ? "bg-white text-black translate-y-[4px]"
+                  : "bg-slate-200 text-slate-500 hover:bg-slate-100 hover:text-black border-b-4 border-b-black"
+              }`}
+            >
+              Monitoring & Statistik
+            </button>
+            <button
+              onClick={() => setRightTab("non_voters")}
+              className={`flex-1 py-3 px-6 text-center font-black uppercase text-xs tracking-wider border-t-4 border-x-4 border-black transition-colors ${
+                rightTab === "non_voters"
+                  ? "bg-white text-black translate-y-[4px]"
+                  : "bg-slate-200 text-slate-500 hover:bg-slate-100 hover:text-black border-b-4 border-b-black"
+              }`}
+            >
+              Siswa Belum Memilih
+            </button>
+          </div>
 
-          {/* Summary Stats Cards */}
-          {summary && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Total Siswa</p>
-                <p className="text-2xl font-black text-black leading-none">{summary.total_siswa}</p>
-                <p className="text-[10px] text-slate-400 font-semibold mt-1">Daftar DPT</p>
-              </div>
-
-              <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Hadir di TPS</p>
-                <p className="text-2xl font-black text-emerald-600 leading-none">{summary.total_hadir}</p>
-                <p className="text-[10px] text-slate-400 font-semibold mt-1">Kehadiran: **{summary.persen_hadir}%**</p>
-              </div>
-
-              <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Sudah Memilih</p>
-                <p className="text-2xl font-black text-blue-600 leading-none">{summary.total_memilih}</p>
-                <p className="text-[10px] text-slate-400 font-semibold mt-1">Suara Sah: **{summary.persen_memilih}%**</p>
-              </div>
-
-              <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Belum Memilih</p>
-                <p className="text-2xl font-black text-rose-600 leading-none">{summary.total_golput}</p>
-                <p className="text-[10px] text-slate-400 font-semibold mt-1">Golput/Belum hadir</p>
-              </div>
-            </div>
-          )}
-
-          {/* List Kelas & Status Kehadiran */}
-          <div className="bg-white border-4 border-black p-6" style={{ boxShadow: "6px 6px 0px 0px #000" }}>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-black pb-4 mb-6">
-              <div>
-                <h2 className="text-xl font-black uppercase text-black">Partisipasi Kelas</h2>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Statistik di-refresh otomatis tiap 10 detik</p>
-              </div>
-
-              {/* Input Search Kelas */}
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Cari Kelas..."
-                  value={searchClass}
-                  onChange={(e) => setSearchClass(e.target.value)}
-                  className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
-                />
-              </div>
-            </div>
-
-            {/* List Progress Kelas */}
-            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
-              {filteredClassStats.length === 0 ? (
-                <p className="text-center py-8 text-slate-400 font-bold">Kelas tidak ditemukan.</p>
-              ) : (
-                filteredClassStats.map((c) => (
-                  <div key={c.kelas} className="border border-slate-200 p-3 bg-slate-50">
-                    <div className="flex justify-between items-end mb-1">
-                      <p className="font-bold text-black uppercase tracking-wider text-sm">{c.kelas}</p>
-                      <p className="text-xs text-slate-500 font-bold">
-                        Hadir: <span className="text-black">{c.hadir}</span>/{c.total} siswa ({c.persen_hadir}%)
-                      </p>
-                    </div>
-
-                    {/* Progress Bar Kehadiran Kelas */}
-                    <div className="w-full h-3 bg-slate-200 border border-black overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-600 transition-all duration-500"
-                        style={{ width: `${c.persen_hadir}%` }}
-                      />
-                    </div>
+          {rightTab === "stats" ? (
+            <div className="space-y-8">
+              {/* Summary Stats Cards */}
+              {summary && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Total Siswa</p>
+                    <p className="text-2xl font-black text-black leading-none">{summary.total_siswa}</p>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Daftar DPT</p>
                   </div>
-                ))
+
+                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Hadir di TPS</p>
+                    <p className="text-2xl font-black text-emerald-600 leading-none">{summary.total_hadir}</p>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Kehadiran: **{summary.persen_hadir}%**</p>
+                  </div>
+
+                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Sudah Memilih</p>
+                    <p className="text-2xl font-black text-blue-600 leading-none">{summary.total_memilih}</p>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Suara Sah: **{summary.persen_memilih}%**</p>
+                  </div>
+
+                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Belum Memilih</p>
+                    <p className="text-2xl font-black text-rose-600 leading-none">{summary.total_golput}</p>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Golput/Belum hadir</p>
+                  </div>
+                </div>
+              )}
+
+              {/* List Kelas & Status Kehadiran */}
+              <div className="bg-white border-4 border-black p-6" style={{ boxShadow: "6px 6px 0px 0px #000" }}>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-black pb-4 mb-6">
+                  <div>
+                    <h2 className="text-xl font-black uppercase text-black">Partisipasi Kelas</h2>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Statistik di-refresh otomatis tiap 10 detik</p>
+                  </div>
+
+                  {/* Input Search Kelas */}
+                  <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Cari Kelas..."
+                      value={searchClass}
+                      onChange={(e) => setSearchClass(e.target.value)}
+                      className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* List Progress Kelas */}
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+                  {filteredClassStats.length === 0 ? (
+                    <p className="text-center py-8 text-slate-400 font-bold">Kelas tidak ditemukan.</p>
+                  ) : (
+                    filteredClassStats.map((c) => (
+                      <div key={c.kelas} className="border border-slate-200 p-3 bg-slate-50">
+                        <div className="flex justify-between items-end mb-1">
+                          <p className="font-bold text-black uppercase tracking-wider text-sm">{c.kelas}</p>
+                          <p className="text-xs text-slate-500 font-bold">
+                            Hadir: <span className="text-black">{c.hadir}</span>/{c.total} siswa ({c.persen_hadir}%)
+                          </p>
+                        </div>
+
+                        {/* Progress Bar Kehadiran Kelas */}
+                        <div className="w-full h-3 bg-slate-200 border border-black overflow-hidden">
+                          <div
+                            className="h-full bg-emerald-600 transition-all duration-500"
+                            style={{ width: `${c.persen_hadir}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white border-4 border-black p-6 space-y-6" style={{ boxShadow: "6px 6px 0px 0px #000" }}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-black pb-4">
+                <div>
+                  <h2 className="text-xl font-black uppercase text-black">Siswa Belum Memilih</h2>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                    Total: {nonVotersTotalCount} Siswa Belum Menyalurkan Suara
+                  </p>
+                </div>
+                <button
+                  onClick={() => fetchNonVoters(nonVotersPage, nonVotersSearch, nonVotersClass)}
+                  className="px-3 py-1.5 border-2 border-black bg-slate-50 hover:bg-slate-100 text-black font-black text-xs uppercase flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Refresh
+                </button>
+              </div>
+
+              {/* Filters */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Cari nama siswa..."
+                    value={nonVotersSearch}
+                    onChange={(e) => {
+                      setNonVotersSearch(e.target.value);
+                      setNonVotersPage(1);
+                    }}
+                    className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
+                  />
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Filter kelas..."
+                    value={nonVotersClass}
+                    onChange={(e) => {
+                      setNonVotersClass(e.target.value);
+                      setNonVotersPage(1);
+                    }}
+                    className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Students List */}
+              {loadingNonVoters ? (
+                <div className="py-20 flex justify-center items-center">
+                  <div className="w-8 h-8 border-3 border-rose-600 border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : nonVoters.length === 0 ? (
+                <div className="py-16 text-center text-slate-400 border-2 border-dashed border-slate-300 font-bold text-sm">
+                  Semua siswa dalam pencarian ini telah selesai memilih.
+                </div>
+              ) : (
+                <div className="border-2 border-black overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[500px]">
+                    <thead>
+                      <tr className="bg-slate-100 border-b-2 border-black text-xs font-black uppercase tracking-wider">
+                        <th className="p-3">Nama Siswa</th>
+                        <th className="p-3">Kelas</th>
+                        <th className="p-3 text-right">Status Kehadiran</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 font-semibold text-xs">
+                      {nonVoters.map((student) => (
+                        <tr key={student.id} className="hover:bg-slate-50">
+                          <td className="p-3 font-black uppercase text-black">{student.nama}</td>
+                          <td className="p-3 text-slate-500 font-bold uppercase">{student.kelas}</td>
+                          <td className="p-3 text-right">
+                            {student.hadir ? (
+                              <span className="bg-emerald-100 border border-emerald-600 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded">
+                                HADIR DI TPS
+                              </span>
+                            ) : (
+                              <span className="bg-rose-100 border border-rose-600 text-rose-800 text-[9px] font-black px-2 py-0.5 rounded">
+                                BELUM HADIR
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Pagination */}
+              {nonVotersTotalPages > 1 && (
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                  <button
+                    disabled={nonVotersPage === 1 || loadingNonVoters}
+                    onClick={() => setNonVotersPage((prev) => Math.max(prev - 1, 1))}
+                    className="px-3 py-1.5 border-2 border-black bg-slate-50 hover:bg-slate-100 text-black font-black uppercase text-xs tracking-wider transition-colors disabled:opacity-40"
+                  >
+                    Sebelumnya
+                  </button>
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-400">
+                    Halaman {nonVotersPage} dari {nonVotersTotalPages}
+                  </span>
+                  <button
+                    disabled={nonVotersPage === nonVotersTotalPages || loadingNonVoters}
+                    onClick={() => setNonVotersPage((prev) => Math.min(prev + 1, nonVotersTotalPages))}
+                    className="px-3 py-1.5 border-2 border-black bg-slate-50 hover:bg-slate-100 text-black font-black uppercase text-xs tracking-wider transition-colors disabled:opacity-40"
+                  >
+                    Selanjutnya
+                  </button>
+                </div>
               )}
             </div>
-          </div>
+          )}
         </section>
 
       </main>
