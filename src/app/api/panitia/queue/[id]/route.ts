@@ -46,16 +46,28 @@ export async function PATCH(
       );
     }
 
-    if (loginRequest.status !== "PENDING") {
+    if (loginRequest.status === "VOTED") {
       return NextResponse.json(
-        { message: `Request sudah dalam status ${loginRequest.status}.` },
-        { status: 409 }
+        { message: "Siswa sudah selesai menggunakan hak pilihnya. Sesi tidak dapat di-reset." },
+        { status: 400 }
       );
     }
 
-    const newStatus = action === "APPROVE" ? "APPROVED" : "REJECTED";
+    if (loginRequest.status === "REJECTED") {
+      return NextResponse.json(
+        { message: "Permintaan ini sudah ditolak sebelumnya." },
+        { status: 400 }
+      );
+    }
 
-    // Jika approve, tandai siswa sebagai hadir
+    if (action === "APPROVE" && loginRequest.status !== "PENDING") {
+      return NextResponse.json(
+        { message: `Tidak dapat menyetujui permintaan dengan status ${loginRequest.status}.` },
+        { status: 400 }
+      );
+    }
+
+    // Eksekusi aksi berdasarkan status
     if (action === "APPROVE") {
       await prisma.$transaction([
         prisma.loginRequest.update({
@@ -68,10 +80,25 @@ export async function PATCH(
         }),
       ]);
     } else {
-      await prisma.loginRequest.update({
-        where: { id },
-        data: { status: newStatus },
-      });
+      // Jika menolak / meriset request yang sudah APPROVED atau TIMED_OUT, hapus tanda hadir
+      if (loginRequest.status === "APPROVED" || loginRequest.status === "TIMED_OUT") {
+        await prisma.$transaction([
+          prisma.loginRequest.update({
+            where: { id },
+            data: { status: "REJECTED" },
+          }),
+          prisma.student.update({
+            where: { id: loginRequest.student_id },
+            data: { hadir: false },
+          }),
+        ]);
+      } else {
+        // Status masih PENDING, cukup tandai REJECTED
+        await prisma.loginRequest.update({
+          where: { id },
+          data: { status: "REJECTED" },
+        });
+      }
     }
 
     await prisma.auditLog.create({
@@ -83,7 +110,7 @@ export async function PATCH(
 
     return NextResponse.json({
       message: `Request berhasil di-${action.toLowerCase()}.`,
-      status: newStatus,
+      status: action === "APPROVE" ? "APPROVED" : "REJECTED",
     });
   } catch (error) {
     console.error("Queue action error:", error);

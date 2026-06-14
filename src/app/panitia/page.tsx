@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { UserCheck, UserX, Users, LogOut, CheckCircle2, Search } from "lucide-react";
+import { UserCheck, UserX, Users, LogOut, Search } from "lucide-react";
 
 interface Student {
   id: string;
@@ -15,6 +15,7 @@ interface LoginRequest {
   id: string;
   student_id: string;
   student: Student;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "VOTED" | "TIMED_OUT";
   created_at: string;
 }
 
@@ -162,6 +163,9 @@ export default function PanitiaDashboard() {
     c.kelas.toLowerCase().includes(searchClass.toLowerCase())
   );
 
+  const pendingRequests = queue.filter((r) => r.status === "PENDING");
+  const activeVoters = queue.filter((r) => r.status === "APPROVED" || r.status === "TIMED_OUT");
+
   if (loading || !role) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-800">
@@ -210,23 +214,23 @@ export default function PanitiaDashboard() {
             <div className="flex justify-between items-center border-b-2 border-black pb-4 mb-4">
               <div>
                 <h2 className="text-xl font-black uppercase text-black">Antrean Pendaftaran</h2>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Diperbarui otomatis tiap 3 detik</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Diperbarui otomatis tiap 6 detik</p>
               </div>
               <span className="bg-emerald-100 border border-emerald-600 text-emerald-800 font-bold px-3 py-1 text-sm">
-                {queue.length} Antrean
+                {pendingRequests.length} Antrean
               </span>
             </div>
 
             {/* List Antrean */}
-            <div className="flex-1 overflow-y-auto max-h-[600px] space-y-4 pr-1">
-              {queue.length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center text-center text-slate-400 border-2 border-dashed border-slate-300 p-6">
-                  <Users className="w-12 h-12 mb-3 stroke-1" />
-                  <p className="font-bold">Belum ada antrean pendaftaran</p>
-                  <p className="text-xs mt-1">Siswa di bilik suara belum mengirim permintaan login.</p>
+            <div className="flex-1 overflow-y-auto max-h-[300px] space-y-4 pr-1 mb-6 border-b-2 border-dashed border-slate-200 pb-4">
+              {pendingRequests.length === 0 ? (
+                <div className="h-48 flex flex-col items-center justify-center text-center text-slate-400 border-2 border-dashed border-slate-300 p-6">
+                  <Users className="w-10 h-10 mb-2 stroke-1" />
+                  <p className="font-bold text-sm">Belum ada antrean pendaftaran</p>
+                  <p className="text-[10px] mt-0.5">Siswa di bilik suara belum mengirim permintaan login.</p>
                 </div>
               ) : (
-                queue.map((req) => (
+                pendingRequests.map((req) => (
                   <div
                     key={req.id}
                     className="bg-slate-50 border-2 border-black p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all"
@@ -265,6 +269,64 @@ export default function PanitiaDashboard() {
                   </div>
                 ))
               )}
+            </div>
+
+            {/* Bilik Suara Aktif */}
+            <div>
+              <div className="flex justify-between items-center pb-4 mb-4">
+                <div>
+                  <h2 className="text-xl font-black uppercase text-black">Bilik Suara Aktif</h2>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Siswa sedang di dalam bilik suara</p>
+                </div>
+                <span className="bg-blue-100 border border-blue-600 text-blue-800 font-bold px-3 py-1 text-sm">
+                  {activeVoters.length} Aktif
+                </span>
+              </div>
+
+              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
+                {activeVoters.length === 0 ? (
+                  <div className="h-32 flex flex-col items-center justify-center text-center text-slate-400 border-2 border-dashed border-slate-300 p-4">
+                    <p className="font-bold text-xs">Tidak ada bilik suara yang aktif</p>
+                  </div>
+                ) : (
+                  activeVoters.map((req) => (
+                    <div
+                      key={req.id}
+                      className={`border-2 border-black p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all ${
+                        req.status === "TIMED_OUT" ? "bg-rose-50 border-rose-600" : "bg-blue-50"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-black text-black text-lg leading-tight uppercase">{req.student.nama}</p>
+                          {req.status === "TIMED_OUT" && (
+                            <span className="bg-rose-600 text-white text-[9px] font-black uppercase px-2 py-0.5 animate-pulse rounded">
+                              WAKTU HABIS / TERKUNCI
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-500 font-bold uppercase mt-1">Kelas: {req.student.kelas}</p>
+                      </div>
+
+                      <div className="shrink-0">
+                        <button
+                          disabled={actionLoading[req.id]}
+                          onClick={() => handleAction(req.id, "REJECT")}
+                          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white border-2 border-black font-black uppercase text-xs tracking-wider transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                          style={{ boxShadow: "2px 2px 0px 0px #000" }}
+                        >
+                          {actionLoading[req.id] ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <UserX className="w-4 h-4" />
+                          )}
+                          RESET BILIK
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </section>

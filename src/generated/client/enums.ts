@@ -13,7 +13,8 @@ export const RequestStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
-  VOTED: 'VOTED'
+  VOTED: 'VOTED',
+  TIMED_OUT: 'TIMED_OUT'
 } as const
 
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]

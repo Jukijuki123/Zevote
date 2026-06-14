@@ -29,6 +29,7 @@ enum RequestStatus {
   APPROVED
   REJECTED
   VOTED
+  TIMED_OUT
 }
 
 model LoginRequest {

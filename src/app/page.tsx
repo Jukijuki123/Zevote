@@ -39,7 +39,7 @@ export default function VotingBoothPage() {
         }
         const data = await res.json();
 
-        if (data.status === "APPROVED") {
+        if (data.status === "APPROVED" || data.status === "TIMED_OUT") {
           clearInterval(pollRef.current!);
           router.push("/vote");
         } else if (data.status === "REJECTED") {
@@ -80,7 +80,7 @@ export default function VotingBoothPage() {
         const res = await fetch("/api/vote/status");
         if (res.ok) {
           const data = await res.json();
-          if (data.status === "APPROVED") {
+          if (data.status === "APPROVED" || data.status === "TIMED_OUT") {
             router.push("/vote");
           } else if (data.status === "PENDING") {
             setPageState("waiting");

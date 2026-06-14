@@ -24,7 +24,7 @@ export async function GET() {
 
   try {
     const requests = await prisma.loginRequest.findMany({
-      where: { status: "PENDING" },
+      where: { status: { in: ["PENDING", "APPROVED", "TIMED_OUT"] } },
       include: {
         student: {
           select: { id: true, nama: true, kelas: true, sudah_memilih: true },

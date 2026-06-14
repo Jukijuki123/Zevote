@@ -29,6 +29,7 @@ export default function VotePage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [redirectCount, setRedirectCount] = useState(3);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLocalTimeout, setIsLocalTimeout] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const redirectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -42,9 +43,12 @@ export default function VotePage() {
         return;
       }
       const data = await res.json();
-      if (data.status !== "APPROVED") {
+      if (data.status !== "APPROVED" && data.status !== "TIMED_OUT") {
         router.replace("/");
         return;
+      }
+      if (data.status === "TIMED_OUT") {
+        setIsLocalTimeout(true);
       }
       setStudent(data.student);
     } catch {
@@ -78,17 +82,17 @@ export default function VotePage() {
   // 3. Kelola Timer 180 Detik
   const handleTimeout = useCallback(async () => {
     if (timerRef.current) clearInterval(timerRef.current);
+    setIsLocalTimeout(true);
     try {
-      // Panggil API untuk hapus sesi
-      await fetch("/api/vote/status", { method: "DELETE" });
-    } catch {
-      // abaikan error pembersihan
+      // Panggil API untuk kunci sesi di DB
+      await fetch("/api/vote/timeout", { method: "POST" });
+    } catch (err) {
+      console.error("Gagal mengirim status timeout", err);
     }
-    router.replace("/");
-  }, [router]);
+  }, []);
 
   useEffect(() => {
-    if (loading || isSuccess) return;
+    if (loading || isSuccess || isLocalTimeout) return;
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -103,7 +107,38 @@ export default function VotePage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [loading, isSuccess, handleTimeout]);
+  }, [loading, isSuccess, isLocalTimeout, handleTimeout]);
+
+  // 3b. Polling status untuk mendeteksi reset terpusat oleh panitia
+  useEffect(() => {
+    if (loading || !student || isSuccess) return;
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/vote/status");
+        if (!res.ok) {
+          clearInterval(pollInterval);
+          await fetch("/api/vote/status", { method: "DELETE" });
+          router.replace("/");
+          return;
+        }
+        const data = await res.json();
+        if (data.status === "TIMED_OUT") {
+          setIsLocalTimeout(true);
+        } else if (data.status !== "APPROVED" && data.status !== "TIMED_OUT") {
+          clearInterval(pollInterval);
+          await fetch("/api/vote/status", { method: "DELETE" });
+          router.replace("/");
+        }
+      } catch {
+        // Abaikan error jaringan sementara
+      }
+    }, 4000);
+
+    return () => {
+      clearInterval(pollInterval);
+    };
+  }, [loading, student, isSuccess, router]);
 
   // 4. Submit Pilihan Kandidat
   const handleSubmitVote = async () => {
@@ -145,15 +180,7 @@ export default function VotePage() {
     }
   };
 
-  const handleCancelVote = async () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    try {
-      await fetch("/api/vote/status", { method: "DELETE" });
-    } catch {
-      // ignore
-    }
-    router.replace("/");
-  };
+
 
   // 5. Hitung Format Waktu MM:SS
   const formatTime = (seconds: number) => {
@@ -324,16 +351,10 @@ export default function VotePage() {
         </main>
 
         {/* Footer Bilik */}
-        <footer className="bg-white border-t-4 border-black py-4 px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-xs font-semibold text-slate-500 text-center sm:text-left">
+        <footer className="bg-white border-t-4 border-black py-4 px-6 text-center">
+          <p className="text-xs font-semibold text-slate-500">
             Pilihan Anda bersifat Rahasia, Aman, dan Langsung terekam ke sistem database panitia.
           </p>
-          <button
-            onClick={handleCancelVote}
-            className="text-xs font-bold uppercase tracking-wider text-rose-600 hover:text-rose-800 underline underline-offset-4 self-center sm:self-auto"
-          >
-            Batal & Keluar Bilik
-          </button>
         </footer>
 
         {/* ========================
@@ -393,6 +414,31 @@ export default function VotePage() {
                     "YA, YAKIN"
                   )}
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================
+        // LAYAR KUNCI (TIMEOUT OVERLAY)
+        // ======================== */}
+        {isLocalTimeout && (
+          <div className="fixed inset-0 z-50 bg-rose-600 flex items-center justify-center p-6 select-none animate-fade-in">
+            <div className="w-full max-w-lg bg-white border-4 border-black p-8 text-center animate-scale-up" style={{ boxShadow: "8px 8px 0px 0px #000" }}>
+              <div className="w-20 h-20 bg-rose-100 border-3 border-black flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-rose-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-black uppercase tracking-wider text-black mb-3">Waktu Memilih Habis!</h1>
+              <p className="text-slate-700 font-bold mb-6 text-sm uppercase tracking-wide">
+                Layar Bilik Suara Anda Telah Dikunci.
+              </p>
+              <p className="text-slate-600 font-semibold mb-6">
+                Sesi Anda telah berakhir. Silakan panggil panitia di meja registrasi untuk mengaktifkan kembali bilik suara Anda.
+              </p>
+              <div className="inline-block px-4 py-2 bg-slate-100 border-2 border-black font-black text-xs uppercase text-slate-500 tracking-wider">
+                Menunggu tindakan panitia...
               </div>
             </div>
           </div>
