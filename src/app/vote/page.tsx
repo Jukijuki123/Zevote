@@ -22,7 +22,7 @@ export default function VotePage() {
   const [loading, setLoading] = useState(true);
   const [student, setStudent] = useState<StudentSession | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [timeLeft, setTimeLeft] = useState(180); // 180 detik (3 menit)
+  const [timeLeft, setTimeLeft] = useState(120); // 120 detik (2 menit)
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,12 +159,11 @@ export default function VotePage() {
         setIsConfirmOpen(false);
         setIsSuccess(true);
 
-        // Timer hitung mundur sukses redirect
+        // Timer hitung mundur sukses redirect (hanya mengurangkan hitungan)
         redirectTimerRef.current = setInterval(() => {
           setRedirectCount((prev) => {
             if (prev <= 1) {
-              clearInterval(redirectTimerRef.current!);
-              router.replace("/");
+              if (redirectTimerRef.current) clearInterval(redirectTimerRef.current);
               return 0;
             }
             return prev - 1;
@@ -179,6 +178,13 @@ export default function VotePage() {
       setIsSubmitting(false);
     }
   };
+
+  // 4b. Handler efek samping navigasi setelah sukses voting
+  useEffect(() => {
+    if (isSuccess && redirectCount === 0) {
+      router.replace("/");
+    }
+  }, [isSuccess, redirectCount, router]);
 
 
 
@@ -201,8 +207,8 @@ export default function VotePage() {
 
   // Warna Progress Bar berdasarkan Sisa Waktu
   const getProgressBarColor = () => {
-    if (timeLeft > 90) return "bg-emerald-500";
-    if (timeLeft > 36) return "bg-amber-500";
+    if (timeLeft > 60) return "bg-emerald-500";
+    if (timeLeft > 24) return "bg-amber-500";
     return "bg-rose-600 animate-pulse";
   };
 
@@ -253,7 +259,7 @@ export default function VotePage() {
         <div className="w-full h-3 bg-slate-200 border-b border-black">
           <div
             className={`h-full transition-all duration-1000 ${getProgressBarColor()}`}
-            style={{ width: `${(timeLeft / 180) * 100}%` }}
+            style={{ width: `${(timeLeft / 120) * 100}%` }}
           />
         </div>
 
@@ -291,7 +297,7 @@ export default function VotePage() {
             PILIH SALAH SATU KANDIDAT KETUA OSIS
           </h2>
           <p className="text-slate-500 font-medium text-sm md:text-base mt-2">
-            Klik tombol "PILIH" di bawah foto kandidat pilihanmu untuk memberikan suara
+            Klik tombol &quot;PILIH SEKARANG&quot; di bawah foto kandidat pilihanmu untuk memberikan suara
           </p>
         </div>
 

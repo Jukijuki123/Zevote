@@ -74,6 +74,21 @@ export default function AdminDashboard() {
   // General Error/Success Messages
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
+  // Custom Confirmation Modal State
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: (() => void) | null;
+    isDanger?: boolean;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+    isDanger: false,
+  });
+
   const fetchSettings = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/settings");
@@ -139,7 +154,10 @@ export default function AdminDashboard() {
 
   // Fetch initial data
   useEffect(() => {
-    checkAuth();
+    const init = async () => {
+      await checkAuth();
+    };
+    init();
   }, [checkAuth]);
 
   const handleLogout = async () => {
@@ -153,14 +171,7 @@ export default function AdminDashboard() {
   };
 
   // ------------------ TAB 1: ELECTION SETTINGS ------------------
-  const updateElectionStatus = async (status: "OPEN" | "CLOSED") => {
-    if (
-      status === "CLOSED" &&
-      !confirm("Apakah Anda yakin ingin MENUTUP pemilihan? Sesi voting akan dihentikan dan hasil akan dirangkum.")
-    ) {
-      return;
-    }
-
+  const executeUpdateElectionStatus = async (status: "OPEN" | "CLOSED") => {
     try {
       const res = await fetch("/api/admin/settings", {
         method: "POST",
@@ -181,15 +192,21 @@ export default function AdminDashboard() {
     }
   };
 
-  const resetElection = async () => {
-    if (
-      !confirm(
-        "PERINGATAN KERAS!\nTindakan ini akan menghapus seluruh suara masuk, menghapus antrean login, dan mengatur ulang status kehadiran siswa ke nol.\n\nApakah Anda yakin ingin mereset total?"
-      )
-    ) {
-      return;
+  const updateElectionStatus = (status: "OPEN" | "CLOSED") => {
+    if (status === "CLOSED") {
+      setConfirmModal({
+        isOpen: true,
+        title: "Tutup Pemilihan",
+        message: "Apakah Anda yakin ingin MENUTUP pemilihan? Sesi voting akan dihentikan dan hasil akan dirangkum.",
+        isDanger: true,
+        onConfirm: () => executeUpdateElectionStatus(status),
+      });
+    } else {
+      executeUpdateElectionStatus(status);
     }
+  };
 
+  const executeResetElection = async () => {
     try {
       const res = await fetch("/api/admin/settings", {
         method: "POST",
@@ -200,7 +217,7 @@ export default function AdminDashboard() {
         triggerAlert("success", "Pemilihan berhasil di-reset total ke DRAFT.");
         fetchSettings();
         fetchCandidates();
-        fetchStudents(1);
+        fetchStudents(1, "");
         fetchLogs();
       } else {
         triggerAlert("error", "Gagal mereset pemilihan.");
@@ -209,6 +226,16 @@ export default function AdminDashboard() {
       console.error("resetElection error:", error);
       triggerAlert("error", "Terjadi kesalahan koneksi.");
     }
+  };
+
+  const resetElection = () => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Reset Total Pemilihan",
+      message: "PERINGATAN KERAS!\nTindakan ini akan menghapus seluruh suara masuk, menghapus antrean login, dan mengatur ulang status kehadiran siswa ke nol.\n\nApakah Anda yakin ingin mereset total?",
+      isDanger: true,
+      onConfirm: () => executeResetElection(),
+    });
   };
 
   // ------------------ TAB 2: CANDIDATES CRUD ------------------
@@ -263,9 +290,7 @@ export default function AdminDashboard() {
     setCandidateError("");
   };
 
-  const handleDeleteCandidate = async (id: string, name: string) => {
-    if (!confirm(`Apakah Anda yakin ingin menghapus kandidat: ${name}?`)) return;
-
+  const executeDeleteCandidate = async (id: string, name: string) => {
     try {
       const res = await fetch(`/api/admin/candidates/${id}`, {
         method: "DELETE",
@@ -281,6 +306,16 @@ export default function AdminDashboard() {
       console.error("handleDeleteCandidate error:", error);
       triggerAlert("error", "Terjadi kesalahan koneksi.");
     }
+  };
+
+  const handleDeleteCandidate = (id: string, name: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Hapus Kandidat",
+      message: `Apakah Anda yakin ingin menghapus kandidat: ${name}?`,
+      isDanger: true,
+      onConfirm: () => executeDeleteCandidate(id, name),
+    });
   };
 
   // ------------------ TAB 3: STUDENTS CSV IMPORT ------------------
@@ -1011,6 +1046,42 @@ export default function AdminDashboard() {
           )}
         </main>
       </div>
+
+      {/* CUSTOM CONFIRM MODAL (NEO-BRUTALIST) */}
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div
+            className="bg-white border-4 border-black w-full max-w-md p-6 relative text-black animate-scale-up"
+            style={{ boxShadow: "8px 8px 0px 0px #000" }}
+          >
+            <h3 className="text-2xl font-black uppercase tracking-wide text-black mb-3">
+              {confirmModal.title}
+            </h3>
+            <p className="text-slate-600 font-semibold text-sm mb-6 whitespace-pre-line">
+              {confirmModal.message}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-black border-2 border-black font-black uppercase text-xs tracking-wider transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  if (confirmModal.onConfirm) confirmModal.onConfirm();
+                  setConfirmModal({ ...confirmModal, isOpen: false });
+                }}
+                className={`flex-1 py-3 border-2 border-black font-black uppercase text-xs tracking-wider transition-colors text-white ${
+                  confirmModal.isDanger ? "bg-rose-600 hover:bg-rose-700" : "bg-emerald-600 hover:bg-emerald-700"
+                }`}
+              >
+                Ya, Lanjutkan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

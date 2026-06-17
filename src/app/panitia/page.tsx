@@ -63,6 +63,52 @@ export default function PanitiaDashboard() {
   const [nonVotersTotalCount, setNonVotersTotalCount] = useState(0);
   const [loadingNonVoters, setLoadingNonVoters] = useState(false);
 
+  // Custom Alert & Confirm Popups
+  const [alertState, setAlertState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "success" | "error";
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "error",
+  });
+
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: (() => void) | null;
+    isDanger?: boolean;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+    isDanger: false,
+  });
+
+  const triggerCustomAlert = (title: string, message: string, type: "success" | "error" = "error") => {
+    setAlertState({
+      isOpen: true,
+      title,
+      message,
+      type,
+    });
+  };
+
+  const confirmResetBooth = (requestId: string, studentName: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: "Reset Bilik Suara",
+      message: `Apakah Anda yakin ingin MERESET bilik suara untuk siswa: ${studentName}?\nSesi bilik suara mereka akan langsung ditutup dan kehadiran mereka akan diatur ulang.`,
+      isDanger: true,
+      onConfirm: () => handleAction(requestId, "REJECT"),
+    });
+  };
+
   const queueTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const statsTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const nonVotersDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -186,10 +232,10 @@ export default function PanitiaDashboard() {
         // Refresh statistik secara berkala
         fetchStats();
       } else {
-        alert("Gagal melakukan aksi. Silakan coba lagi.");
+        triggerCustomAlert("Aksi Gagal", "Gagal melakukan aksi. Silakan coba lagi.", "error");
       }
     } catch {
-      alert("Terjadi kesalahan koneksi.");
+      triggerCustomAlert("Kesalahan Koneksi", "Terjadi kesalahan koneksi saat menghubungi server.", "error");
     } finally {
       setActionLoading((prev) => ({ ...prev, [requestId]: false }));
     }
@@ -358,7 +404,7 @@ export default function PanitiaDashboard() {
                       <div className="shrink-0">
                         <button
                           disabled={actionLoading[req.id]}
-                          onClick={() => handleAction(req.id, "REJECT")}
+                          onClick={() => confirmResetBooth(req.id, req.student.nama)}
                           className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white border-2 border-black font-black uppercase text-xs tracking-wider transition-colors flex items-center gap-1.5 disabled:opacity-50"
                           style={{ boxShadow: "2px 2px 0px 0px #000" }}
                         >
@@ -610,6 +656,65 @@ export default function PanitiaDashboard() {
           ZEVOTE © 2026 · Sistem Informasi TPS E-Voting OSIS Digital Terpusat
         </p>
       </footer>
+
+      {/* CUSTOM CONFIRM MODAL (NEO-BRUTALIST) */}
+      {confirmState.isOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div
+            className="bg-white border-4 border-black w-full max-w-md p-6 relative text-black animate-scale-up"
+            style={{ boxShadow: "8px 8px 0px 0px #000" }}
+          >
+            <h3 className="text-2xl font-black uppercase tracking-wide text-black mb-3">
+              {confirmState.title}
+            </h3>
+            <p className="text-slate-600 font-semibold text-sm mb-6 whitespace-pre-line">
+              {confirmState.message}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setConfirmState({ ...confirmState, isOpen: false })}
+                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-black border-2 border-black font-black uppercase text-xs tracking-wider transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  if (confirmState.onConfirm) confirmState.onConfirm();
+                  setConfirmState({ ...confirmState, isOpen: false });
+                }}
+                className={`flex-1 py-3 border-2 border-black font-black uppercase text-xs tracking-wider transition-colors text-white ${
+                  confirmState.isDanger ? "bg-rose-600 hover:bg-rose-700" : "bg-emerald-600 hover:bg-emerald-700"
+                }`}
+              >
+                Ya, Lanjutkan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM ALERT MODAL (NEO-BRUTALIST) */}
+      {alertState.isOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div
+            className="bg-white border-4 border-black w-full max-w-sm p-6 relative text-black animate-scale-up"
+            style={{ boxShadow: "8px 8px 0px 0px #000" }}
+          >
+            <h3 className={`text-2xl font-black uppercase tracking-wide mb-3 ${alertState.type === "error" ? "text-rose-600" : "text-emerald-600"}`}>
+              {alertState.title}
+            </h3>
+            <p className="text-slate-600 font-semibold text-sm mb-6">
+              {alertState.message}
+            </p>
+            <button
+              onClick={() => setAlertState({ ...alertState, isOpen: false })}
+              className="w-full py-3 bg-black hover:bg-zinc-800 text-white border-2 border-black font-black uppercase text-xs tracking-wider transition-colors"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

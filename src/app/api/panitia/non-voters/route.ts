@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { verifyAdminToken } from "@/lib/auth";
+import { Prisma } from "@/generated/client/client";
 
 async function checkPanitiaAuth() {
   const cookieStore = await cookies();
@@ -26,11 +27,11 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Filter kondisi: belum memilih
-    const whereCondition: any = {
+    const whereCondition: Prisma.StudentWhereInput = {
       sudah_memilih: false,
     };
 
-    const andConditions: any[] = [];
+    const andConditions: Prisma.StudentWhereInput[] = [];
 
     if (search) {
       andConditions.push({
