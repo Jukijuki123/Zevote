@@ -101,13 +101,14 @@ export async function POST(request: NextRequest) {
       const updateData: {
         election_status: ElectionStatusType;
         started_at?: Date;
-        ended_at?: Date;
+        ended_at?: Date | null;
       } = {
         election_status: status as ElectionStatusType,
       };
 
       if (status === "OPEN") {
         updateData.started_at = new Date();
+        updateData.ended_at = null; // Reset ended_at jika dibuka kembali
       } else if (status === "CLOSED") {
         updateData.ended_at = new Date();
       }

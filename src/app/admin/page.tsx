@@ -201,6 +201,14 @@ export default function AdminDashboard() {
         isDanger: true,
         onConfirm: () => executeUpdateElectionStatus(status),
       });
+    } else if (status === "OPEN" && setting?.election_status === "CLOSED") {
+      setConfirmModal({
+        isOpen: true,
+        title: "Buka Kembali Pemilihan",
+        message: "Apakah Anda yakin ingin MEMBUKA KEMBALI pemilihan?\nSiswa akan dapat melakukan voting lagi dan seluruh data suara yang sudah masuk sebelumnya TIDAK akan terhapus.",
+        isDanger: false,
+        onConfirm: () => executeUpdateElectionStatus(status),
+      });
     } else {
       executeUpdateElectionStatus(status);
     }
@@ -579,6 +587,14 @@ export default function AdminDashboard() {
                         className="px-6 py-2 neo-btn-primary bg-black hover:bg-zinc-800 text-sm"
                       >
                         Tutup Pemilihan
+                      </button>
+                    )}
+                    {setting?.election_status === "CLOSED" && (
+                      <button
+                        onClick={() => updateElectionStatus("OPEN")}
+                        className="px-6 py-2 neo-btn-primary bg-blue-600 hover:bg-blue-700 text-sm"
+                      >
+                        Buka Kembali Pemilihan
                       </button>
                     )}
                   </div>
