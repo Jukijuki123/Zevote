@@ -43,25 +43,25 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
-      <div className="w-full max-w-md neo-box p-8 bg-white rounded-none">
+    <div className="flex-1 flex items-center justify-center p-6 bg-slate-50">
+      <div className="w-full max-w-md border border-slate-200 p-8 bg-white rounded-2xl shadow-sm">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-rose-100 border-2 border-black rounded-none mb-3">
+          <div className="inline-flex p-3 bg-rose-50 border border-rose-100 rounded-xl mb-3 shadow-xs">
             <Lock className="w-8 h-8 text-rose-600" />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight">ZEVOTE</h1>
-          <p className="text-gray-500 font-medium mt-1">Portal Super Admin</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">ZEVOTE</h1>
+          <p className="text-slate-500 font-medium mt-1">Portal Super Admin</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 border-2 border-black bg-rose-50 text-rose-700 font-bold text-sm">
+          <div className="mb-6 p-4 border border-rose-100 rounded-xl bg-rose-50/50 text-rose-700 font-semibold text-sm shadow-xs">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-black uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
               Password Admin
             </label>
             <div className="relative">
@@ -70,14 +70,14 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full neo-input pr-12 rounded-none font-mono"
+                className="w-full neo-input pr-12 rounded-xl font-mono text-slate-800"
                 placeholder="••••••••"
                 disabled={loading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
                 disabled={loading}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -88,7 +88,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 neo-btn-primary rounded-none flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 border border-rose-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:shadow-rose-600/15 transition-all cursor-pointer"
           >
             {loading ? "Memverifikasi..." : "Masuk Dashboard"}
           </button>

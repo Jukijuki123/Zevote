@@ -273,14 +273,14 @@ export default function PanitiaDashboard() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
       {/* Header Dashboard */}
-      <header className="bg-white border-b-4 border-black px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <header className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xs">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-emerald-600 border-2 border-black flex items-center justify-center font-black text-white text-lg">
+          <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center font-bold text-white text-lg shadow-sm shadow-emerald-600/10">
             P
           </div>
           <div>
-            <h1 className="text-xl font-black uppercase tracking-wider text-black">Dashboard Panitia</h1>
-            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">Dashboard Panitia</h1>
+            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
               Portal Registrasi Bilik & Monitoring · Role: <span className="text-emerald-600">{role}</span>
             </p>
           </div>
@@ -288,8 +288,7 @@ export default function PanitiaDashboard() {
 
         <button
           onClick={handleLogout}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold border-2 border-black tracking-wider uppercase text-xs transition-colors self-start sm:self-auto"
-          style={{ boxShadow: "2px 2px 0px 0px #000" }}
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl tracking-wide uppercase text-xs transition-all duration-200 hover:shadow-md hover:shadow-rose-600/25 active:scale-98 self-start sm:self-auto cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           Logout
@@ -303,34 +302,34 @@ export default function PanitiaDashboard() {
         // PANEL KIRI: Antrean Registrasi Bilik (5 Kolom)
         // ============================================== */}
         <section className="lg:col-span-5 flex flex-col">
-          <div className="bg-white border-4 border-black p-6 flex-1 flex flex-col" style={{ boxShadow: "6px 6px 0px 0px #000" }}>
-            <div className="flex justify-between items-center border-b-2 border-black pb-4 mb-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex-1 flex flex-col">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
               <div>
-                <h2 className="text-xl font-black uppercase text-black">Antrean Pendaftaran</h2>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Diperbarui otomatis tiap 6 detik</p>
+                <h2 className="text-lg font-bold text-slate-950 uppercase tracking-tight">Antrean Pendaftaran</h2>
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Diperbarui otomatis tiap 6 detik</p>
               </div>
-              <span className="bg-emerald-100 border border-emerald-600 text-emerald-800 font-bold px-3 py-1 text-sm">
+              <span className="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-full px-3 py-1 text-xs font-semibold">
                 {pendingRequests.length} Antrean
               </span>
             </div>
 
             {/* List Antrean */}
-            <div className="flex-1 overflow-y-auto max-h-[300px] space-y-4 pr-1 mb-6 border-b-2 border-dashed border-slate-200 pb-4">
+            <div className="flex-1 overflow-y-auto max-h-[300px] space-y-3 pr-1 mb-6 border-b border-dashed border-slate-200 pb-4">
               {pendingRequests.length === 0 ? (
-                <div className="h-48 flex flex-col items-center justify-center text-center text-slate-400 border-2 border-dashed border-slate-300 p-6">
-                  <Users className="w-10 h-10 mb-2 stroke-1" />
-                  <p className="font-bold text-sm">Belum ada antrean pendaftaran</p>
-                  <p className="text-[10px] mt-0.5">Siswa di bilik suara belum mengirim permintaan login.</p>
+                <div className="h-48 flex flex-col items-center justify-center text-center text-slate-400 border border-dashed border-slate-200 rounded-xl p-6">
+                  <Users className="w-10 h-10 mb-2 stroke-1 text-slate-300" />
+                  <p className="font-semibold text-slate-600 text-sm">Belum ada antrean pendaftaran</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">Siswa di bilik suara belum mengirim permintaan login.</p>
                 </div>
               ) : (
                 pendingRequests.map((req) => (
                   <div
                     key={req.id}
-                    className="bg-slate-50 border-2 border-black p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all"
+                    className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all hover:bg-slate-100/50"
                   >
                     <div>
-                      <p className="font-black text-black text-lg leading-tight uppercase">{req.student.nama}</p>
-                      <p className="text-xs text-slate-500 font-bold uppercase mt-1">Kelas: {req.student.kelas}</p>
+                      <p className="font-bold text-slate-900 text-base leading-tight uppercase">{req.student.nama}</p>
+                      <p className="text-xs text-slate-500 font-medium uppercase mt-1">Kelas: {req.student.kelas}</p>
                       <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
                         Waktu: {new Date(req.created_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                       </p>
@@ -341,7 +340,7 @@ export default function PanitiaDashboard() {
                       <button
                         disabled={actionLoading[req.id]}
                         onClick={() => handleAction(req.id, "REJECT")}
-                        className="p-2.5 bg-rose-50 hover:bg-rose-100 border-2 border-rose-600 text-rose-600 transition-colors disabled:opacity-50"
+                        className="p-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-all disabled:opacity-50 cursor-pointer"
                         title="Tolak Akses"
                       >
                         <UserX className="w-5 h-5" />
@@ -349,7 +348,7 @@ export default function PanitiaDashboard() {
                       <button
                         disabled={actionLoading[req.id]}
                         onClick={() => handleAction(req.id, "APPROVE")}
-                        className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-black font-black uppercase text-xs tracking-wider transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                        className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold uppercase text-xs tracking-wider transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50 hover:shadow-md cursor-pointer"
                       >
                         {actionLoading[req.id] ? (
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -366,47 +365,48 @@ export default function PanitiaDashboard() {
 
             {/* Bilik Suara Aktif */}
             <div>
-              <div className="flex justify-between items-center pb-4 mb-4">
+              <div className="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
                 <div>
-                  <h2 className="text-xl font-black uppercase text-black">Bilik Suara Aktif</h2>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Siswa sedang di dalam bilik suara</p>
+                  <h2 className="text-lg font-bold text-slate-950 uppercase tracking-tight">Bilik Suara Aktif</h2>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Siswa sedang di dalam bilik suara</p>
                 </div>
-                <span className="bg-blue-100 border border-blue-600 text-blue-800 font-bold px-3 py-1 text-sm">
+                <span className="bg-blue-50 border border-blue-200 text-blue-700 rounded-full px-3 py-1 text-xs font-semibold">
                   {activeVoters.length} Aktif
                 </span>
               </div>
 
-              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 mt-4">
                 {activeVoters.length === 0 ? (
-                  <div className="h-32 flex flex-col items-center justify-center text-center text-slate-400 border-2 border-dashed border-slate-300 p-4">
-                    <p className="font-bold text-xs">Tidak ada bilik suara yang aktif</p>
+                  <div className="h-32 flex flex-col items-center justify-center text-center text-slate-400 border border-dashed border-slate-200 rounded-xl p-4">
+                    <p className="font-semibold text-xs text-slate-500">Tidak ada bilik suara yang aktif</p>
                   </div>
                 ) : (
                   activeVoters.map((req) => (
                     <div
                       key={req.id}
-                      className={`border-2 border-black p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all ${
-                        req.status === "TIMED_OUT" ? "bg-rose-50 border-rose-600" : "bg-blue-50"
+                      className={`border p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl transition-all ${
+                        req.status === "TIMED_OUT"
+                          ? "bg-rose-50/50 border-rose-200"
+                          : "bg-blue-50/30 border-blue-100"
                       }`}
                     >
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-black text-black text-lg leading-tight uppercase">{req.student.nama}</p>
+                          <p className="font-bold text-slate-900 text-base leading-tight uppercase">{req.student.nama}</p>
                           {req.status === "TIMED_OUT" && (
-                            <span className="bg-rose-600 text-white text-[9px] font-black uppercase px-2 py-0.5 animate-pulse rounded">
+                            <span className="bg-rose-600 text-white text-[9px] font-bold uppercase px-2 py-0.5 animate-pulse rounded-md">
                               WAKTU HABIS / TERKUNCI
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500 font-bold uppercase mt-1">Kelas: {req.student.kelas}</p>
+                        <p className="text-xs text-slate-500 font-medium uppercase mt-1">Kelas: {req.student.kelas}</p>
                       </div>
 
                       <div className="shrink-0">
                         <button
                           disabled={actionLoading[req.id]}
                           onClick={() => confirmResetBooth(req.id, req.student.nama)}
-                          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white border-2 border-black font-black uppercase text-xs tracking-wider transition-colors flex items-center gap-1.5 disabled:opacity-50"
-                          style={{ boxShadow: "2px 2px 0px 0px #000" }}
+                          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold uppercase text-xs tracking-wider transition-all flex items-center gap-1.5 disabled:opacity-50 shadow-sm hover:shadow-md cursor-pointer"
                         >
                           {actionLoading[req.id] ? (
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -430,23 +430,23 @@ export default function PanitiaDashboard() {
         <section className="lg:col-span-7 space-y-6">
           
           {/* Tab Header Panel Kanan */}
-          <div className="flex border-b-4 border-black">
+          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60">
             <button
               onClick={() => setRightTab("stats")}
-              className={`flex-1 py-3 px-6 text-center font-black uppercase text-xs tracking-wider border-t-4 border-x-4 border-black transition-colors ${
+              className={`flex-1 py-2 px-4 text-center font-bold uppercase text-xs tracking-wider rounded-lg transition-all cursor-pointer ${
                 rightTab === "stats"
-                  ? "bg-white text-black translate-y-[4px]"
-                  : "bg-slate-200 text-slate-500 hover:bg-slate-100 hover:text-black border-b-4 border-b-black"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-55"
               }`}
             >
               Monitoring & Statistik
             </button>
             <button
               onClick={() => setRightTab("non_voters")}
-              className={`flex-1 py-3 px-6 text-center font-black uppercase text-xs tracking-wider border-t-4 border-x-4 border-black transition-colors ${
+              className={`flex-1 py-2 px-4 text-center font-bold uppercase text-xs tracking-wider rounded-lg transition-all cursor-pointer ${
                 rightTab === "non_voters"
-                  ? "bg-white text-black translate-y-[4px]"
-                  : "bg-slate-200 text-slate-500 hover:bg-slate-100 hover:text-black border-b-4 border-b-black"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-55"
               }`}
             >
               Siswa Belum Memilih
@@ -454,42 +454,42 @@ export default function PanitiaDashboard() {
           </div>
 
           {rightTab === "stats" ? (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Summary Stats Cards */}
               {summary && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Total Siswa</p>
-                    <p className="text-2xl font-black text-black leading-none">{summary.total_siswa}</p>
-                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Daftar DPT</p>
+                    <p className="text-2xl font-bold text-slate-900 leading-none mt-1">{summary.total_siswa}</p>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-2">Daftar DPT</p>
                   </div>
 
-                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Hadir di TPS</p>
-                    <p className="text-2xl font-black text-emerald-600 leading-none">{summary.total_hadir}</p>
-                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Kehadiran: **{summary.persen_hadir}%**</p>
+                    <p className="text-2xl font-bold text-emerald-600 leading-none mt-1">{summary.total_hadir}</p>
+                    <p className="text-[10px] text-emerald-600 font-semibold mt-2">Kehadiran: {summary.persen_hadir}%</p>
                   </div>
 
-                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Sudah Memilih</p>
-                    <p className="text-2xl font-black text-blue-600 leading-none">{summary.total_memilih}</p>
-                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Suara Sah: **{summary.persen_memilih}%**</p>
+                    <p className="text-2xl font-bold text-blue-600 leading-none mt-1">{summary.total_memilih}</p>
+                    <p className="text-[10px] text-blue-600 font-semibold mt-2">Suara Sah: {summary.persen_memilih}%</p>
                   </div>
 
-                  <div className="bg-white border-3 border-black p-4" style={{ boxShadow: "4px 4px 0px 0px #000" }}>
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Belum Memilih</p>
-                    <p className="text-2xl font-black text-rose-600 leading-none">{summary.total_golput}</p>
-                    <p className="text-[10px] text-slate-400 font-semibold mt-1">Golput/Belum hadir</p>
+                    <p className="text-2xl font-bold text-rose-600 leading-none mt-1">{summary.total_golput}</p>
+                    <p className="text-[10px] text-rose-600 font-semibold mt-2">Golput / Sisa</p>
                   </div>
                 </div>
               )}
 
               {/* List Kelas & Status Kehadiran */}
-              <div className="bg-white border-4 border-black p-6" style={{ boxShadow: "6px 6px 0px 0px #000" }}>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-black pb-4 mb-6">
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
                   <div>
-                    <h2 className="text-xl font-black uppercase text-black">Partisipasi Kelas</h2>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Statistik di-refresh otomatis tiap 10 detik</p>
+                    <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Partisipasi Kelas</h2>
+                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Statistik di-refresh otomatis tiap 10 detik</p>
                   </div>
 
                   {/* Input Search Kelas */}
@@ -500,29 +500,29 @@ export default function PanitiaDashboard() {
                       placeholder="Cari Kelas..."
                       value={searchClass}
                       onChange={(e) => setSearchClass(e.target.value)}
-                      className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 font-medium text-sm focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 transition-all text-slate-800"
                     />
                   </div>
                 </div>
 
                 {/* List Progress Kelas */}
-                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
                   {filteredClassStats.length === 0 ? (
-                    <p className="text-center py-8 text-slate-400 font-bold">Kelas tidak ditemukan.</p>
+                    <p className="text-center py-8 text-slate-400 font-medium">Kelas tidak ditemukan.</p>
                   ) : (
                     filteredClassStats.map((c) => (
-                      <div key={c.kelas} className="border border-slate-200 p-3 bg-slate-50">
-                        <div className="flex justify-between items-end mb-1">
-                          <p className="font-bold text-black uppercase tracking-wider text-sm">{c.kelas}</p>
-                          <p className="text-xs text-slate-500 font-bold">
-                            Hadir: <span className="text-black">{c.hadir}</span>/{c.total} siswa ({c.persen_hadir}%)
+                      <div key={c.kelas} className="border border-slate-100 rounded-xl p-3 bg-slate-50/50 hover:bg-slate-50 transition-all">
+                        <div className="flex justify-between items-end mb-1.5">
+                          <p className="font-bold text-slate-800 uppercase tracking-wider text-xs">{c.kelas}</p>
+                          <p className="text-xs text-slate-500 font-medium">
+                            Hadir: <span className="text-slate-800 font-bold">{c.hadir}</span>/{c.total} siswa ({c.persen_hadir}%)
                           </p>
                         </div>
 
                         {/* Progress Bar Kehadiran Kelas */}
-                        <div className="w-full h-3 bg-slate-200 border border-black overflow-hidden">
+                        <div className="w-full h-2 bg-slate-200/70 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-emerald-600 transition-all duration-500"
+                            className="h-full bg-emerald-600 rounded-full transition-all duration-500"
                             style={{ width: `${c.persen_hadir}%` }}
                           />
                         </div>
@@ -533,17 +533,17 @@ export default function PanitiaDashboard() {
               </div>
             </div>
           ) : (
-            <div className="bg-white border-4 border-black p-6 space-y-6" style={{ boxShadow: "6px 6px 0px 0px #000" }}>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-black pb-4">
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-4">
                 <div>
-                  <h2 className="text-xl font-black uppercase text-black">Siswa Belum Memilih</h2>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Siswa Belum Memilih</h2>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
                     Total: {nonVotersTotalCount} Siswa Belum Menyalurkan Suara
                   </p>
                 </div>
                 <button
                   onClick={() => fetchNonVoters(nonVotersPage, nonVotersSearch, nonVotersClass)}
-                  className="px-3 py-1.5 border-2 border-black bg-slate-50 hover:bg-slate-100 text-black font-black text-xs uppercase flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+                  className="px-3 py-1.5 border border-slate-200 rounded-lg bg-white hover:bg-slate-55 text-slate-700 font-semibold text-xs uppercase flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   Refresh
@@ -562,7 +562,7 @@ export default function PanitiaDashboard() {
                       setNonVotersSearch(e.target.value);
                       setNonVotersPage(1);
                     }}
-                    className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 font-medium text-sm focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 transition-all text-slate-800"
                   />
                 </div>
                 <div className="relative">
@@ -575,7 +575,7 @@ export default function PanitiaDashboard() {
                       setNonVotersClass(e.target.value);
                       setNonVotersPage(1);
                     }}
-                    className="w-full bg-slate-50 border-2 border-black pl-9 pr-3 py-2 font-semibold text-sm focus:outline-none focus:border-emerald-600 transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 font-medium text-sm focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 transition-all text-slate-800"
                   />
                 </div>
               </div>
@@ -586,31 +586,31 @@ export default function PanitiaDashboard() {
                   <div className="w-8 h-8 border-3 border-rose-600 border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : nonVoters.length === 0 ? (
-                <div className="py-16 text-center text-slate-400 border-2 border-dashed border-slate-300 font-bold text-sm">
+                <div className="py-16 text-center text-slate-400 border border-dashed border-slate-200 rounded-xl font-medium text-sm">
                   Semua siswa dalam pencarian ini telah selesai memilih.
                 </div>
               ) : (
-                <div className="border-2 border-black overflow-x-auto">
+                <div className="border border-slate-100 rounded-xl overflow-x-auto shadow-xs">
                   <table className="w-full text-left border-collapse min-w-[500px]">
                     <thead>
-                      <tr className="bg-slate-100 border-b-2 border-black text-xs font-black uppercase tracking-wider">
+                      <tr className="bg-slate-50/75 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
                         <th className="p-3">Nama Siswa</th>
                         <th className="p-3">Kelas</th>
                         <th className="p-3 text-right">Status Kehadiran</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200 font-semibold text-xs">
+                    <tbody className="divide-y divide-slate-100 font-medium text-xs text-slate-700">
                       {nonVoters.map((student) => (
-                        <tr key={student.id} className="hover:bg-slate-50">
-                          <td className="p-3 font-black uppercase text-black">{student.nama}</td>
+                        <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 font-bold uppercase text-slate-900">{student.nama}</td>
                           <td className="p-3 text-slate-500 font-bold uppercase">{student.kelas}</td>
                           <td className="p-3 text-right">
                             {student.hadir ? (
-                              <span className="bg-emerald-100 border border-emerald-600 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded">
+                              <span className="bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-1 rounded-full border border-emerald-100">
                                 HADIR DI TPS
                               </span>
                             ) : (
-                              <span className="bg-rose-100 border border-rose-600 text-rose-800 text-[9px] font-black px-2 py-0.5 rounded">
+                              <span className="bg-rose-50 text-rose-700 text-[10px] font-semibold px-2 py-1 rounded-full border border-rose-100">
                                 BELUM HADIR
                               </span>
                             )}
@@ -624,21 +624,21 @@ export default function PanitiaDashboard() {
 
               {/* Pagination */}
               {nonVotersTotalPages > 1 && (
-                <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                   <button
                     disabled={nonVotersPage === 1 || loadingNonVoters}
                     onClick={() => setNonVotersPage((prev) => Math.max(prev - 1, 1))}
-                    className="px-3 py-1.5 border-2 border-black bg-slate-50 hover:bg-slate-100 text-black font-black uppercase text-xs tracking-wider transition-colors disabled:opacity-40"
+                    className="px-3 py-1.5 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-semibold uppercase text-xs tracking-wider transition-all disabled:opacity-40 disabled:hover:bg-white cursor-pointer shadow-xs"
                   >
                     Sebelumnya
                   </button>
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-400">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Halaman {nonVotersPage} dari {nonVotersTotalPages}
                   </span>
                   <button
                     disabled={nonVotersPage === nonVotersTotalPages || loadingNonVoters}
                     onClick={() => setNonVotersPage((prev) => Math.min(prev + 1, nonVotersTotalPages))}
-                    className="px-3 py-1.5 border-2 border-black bg-slate-50 hover:bg-slate-100 text-black font-black uppercase text-xs tracking-wider transition-colors disabled:opacity-40"
+                    className="px-3 py-1.5 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-semibold uppercase text-xs tracking-wider transition-all disabled:opacity-40 disabled:hover:bg-white cursor-pointer shadow-xs"
                   >
                     Selanjutnya
                   </button>
@@ -651,29 +651,26 @@ export default function PanitiaDashboard() {
       </main>
 
       {/* Footer Dashboard */}
-      <footer className="border-t-2 border-slate-200 py-4 px-6 text-center bg-white mt-8">
-        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+      <footer className="border-t border-slate-200/60 py-4 px-6 text-center bg-white mt-8 shadow-xs">
+        <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-widest">
           ZEVOTE © 2026 · Sistem Informasi TPS E-Voting OSIS Digital Terpusat
         </p>
       </footer>
 
-      {/* CUSTOM CONFIRM MODAL (NEO-BRUTALIST) */}
+      {/* CUSTOM CONFIRM MODAL (MODERN CLEAN) */}
       {confirmState.isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div
-            className="bg-white border-4 border-black w-full max-w-md p-6 relative text-black animate-scale-up"
-            style={{ boxShadow: "8px 8px 0px 0px #000" }}
-          >
-            <h3 className="text-2xl font-black uppercase tracking-wide text-black mb-3">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-100 rounded-2xl shadow-xl w-full max-w-md p-6 relative text-slate-900 animate-scale-up">
+            <h3 className="text-xl font-bold uppercase tracking-tight text-slate-950 mb-2">
               {confirmState.title}
             </h3>
-            <p className="text-slate-600 font-semibold text-sm mb-6 whitespace-pre-line">
+            <p className="text-slate-600 font-medium text-sm mb-6 whitespace-pre-line">
               {confirmState.message}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setConfirmState({ ...confirmState, isOpen: false })}
-                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-black border-2 border-black font-black uppercase text-xs tracking-wider transition-colors"
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold uppercase text-xs tracking-wider transition-all cursor-pointer"
               >
                 Batal
               </button>
@@ -682,8 +679,8 @@ export default function PanitiaDashboard() {
                   if (confirmState.onConfirm) confirmState.onConfirm();
                   setConfirmState({ ...confirmState, isOpen: false });
                 }}
-                className={`flex-1 py-3 border-2 border-black font-black uppercase text-xs tracking-wider transition-colors text-white ${
-                  confirmState.isDanger ? "bg-rose-600 hover:bg-rose-700" : "bg-emerald-600 hover:bg-emerald-700"
+                className={`flex-1 py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider transition-all text-white shadow-sm cursor-pointer ${
+                  confirmState.isDanger ? "bg-rose-600 hover:bg-rose-700 shadow-rose-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200"
                 }`}
               >
                 Ya, Lanjutkan
@@ -693,22 +690,19 @@ export default function PanitiaDashboard() {
         </div>
       )}
 
-      {/* CUSTOM ALERT MODAL (NEO-BRUTALIST) */}
+      {/* CUSTOM ALERT MODAL (MODERN CLEAN) */}
       {alertState.isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div
-            className="bg-white border-4 border-black w-full max-w-sm p-6 relative text-black animate-scale-up"
-            style={{ boxShadow: "8px 8px 0px 0px #000" }}
-          >
-            <h3 className={`text-2xl font-black uppercase tracking-wide mb-3 ${alertState.type === "error" ? "text-rose-600" : "text-emerald-600"}`}>
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-100 rounded-2xl shadow-xl w-full max-w-sm p-6 relative text-slate-900 animate-scale-up">
+            <h3 className={`text-xl font-bold uppercase tracking-tight mb-2 ${alertState.type === "error" ? "text-rose-600" : "text-emerald-600"}`}>
               {alertState.title}
             </h3>
-            <p className="text-slate-600 font-semibold text-sm mb-6">
+            <p className="text-slate-600 font-medium text-sm mb-6">
               {alertState.message}
             </p>
             <button
               onClick={() => setAlertState({ ...alertState, isOpen: false })}
-              className="w-full py-3 bg-black hover:bg-zinc-800 text-white border-2 border-black font-black uppercase text-xs tracking-wider transition-colors"
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold uppercase text-xs tracking-wider transition-all shadow-sm cursor-pointer"
             >
               Tutup
             </button>

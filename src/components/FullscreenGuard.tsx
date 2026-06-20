@@ -62,7 +62,7 @@ export default function FullscreenGuard({ enabled = true, children }: Fullscreen
             <div className="absolute inset-0 rounded-full border-4 border-rose-500 animate-ping opacity-40" />
           </div>
 
-          <h2 className="text-3xl font-black text-white uppercase tracking-widest mb-3 text-center">
+          <h2 className="text-3xl font-bold text-white uppercase tracking-widest mb-3 text-center">
             ⚠ Fullscreen Keluar!
           </h2>
           <p className="text-rose-300 font-semibold text-center mb-2 max-w-sm">
@@ -75,8 +75,7 @@ export default function FullscreenGuard({ enabled = true, children }: Fullscreen
 
           <button
             onClick={enterFullscreen}
-            className="px-8 py-4 bg-rose-600 hover:bg-rose-500 text-white font-black text-lg uppercase tracking-wider border-4 border-white transition-all hover:scale-105 active:scale-95"
-            style={{ boxShadow: "6px 6px 0px 0px rgba(255,255,255,0.3)" }}
+            className="px-8 py-4 bg-rose-600 hover:bg-rose-500 text-white font-bold text-lg uppercase tracking-wider rounded-xl transition-all shadow-lg hover:scale-105 active:scale-95"
           >
             Kembali ke Layar Penuh
           </button>

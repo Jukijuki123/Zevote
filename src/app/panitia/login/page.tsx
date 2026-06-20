@@ -61,24 +61,24 @@ export default function PanitiaLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 text-slate-800">
-      <div className="w-full max-w-md bg-white border-4 border-black p-8" style={{ boxShadow: "8px 8px 0px 0px #000" }}>
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-8 shadow-md">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-emerald-100 border-2 border-black mb-3">
+          <div className="inline-flex p-3 bg-emerald-50 border border-emerald-100 rounded-xl mb-3 shadow-xs">
             <Lock className="w-8 h-8 text-emerald-600" />
           </div>
-          <h1 className="text-3xl font-black tracking-tight text-black">ZEVOTE</h1>
-          <p className="text-slate-500 font-bold mt-1 uppercase text-xs tracking-wider">Dashboard Panitia Registrasi</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">ZEVOTE</h1>
+          <p className="text-slate-500 font-semibold mt-1 uppercase text-xs tracking-wider">Dashboard Panitia Registrasi</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 border-2 border-black bg-rose-50 text-rose-700 font-bold text-sm">
+          <div className="mb-6 p-4 border border-rose-100 rounded-xl bg-rose-50/50 text-rose-700 font-semibold text-sm shadow-xs">
             ⚠ {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-slate-605 uppercase tracking-wider mb-2">
               Password Panitia
             </label>
             <div className="relative">
@@ -87,14 +87,14 @@ export default function PanitiaLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-slate-50 border-3 border-black focus:border-rose-600 text-black px-4 py-3 font-semibold focus:outline-none transition-colors"
+                className="w-full neo-input pr-12 rounded-xl font-mono text-slate-850"
                 placeholder="••••••••"
                 disabled={loading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
                 disabled={loading}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -105,8 +105,7 @@ export default function PanitiaLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest border-3 border-black transition-colors"
-            style={{ boxShadow: "4px 4px 0px 0px #000" }}
+            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 border border-emerald-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:shadow-emerald-600/15 transition-all cursor-pointer"
           >
             {loading ? "Memverifikasi..." : "Masuk Dashboard"}
           </button>

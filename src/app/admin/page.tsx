@@ -476,16 +476,16 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
+    <div className="flex-1 flex flex-col bg-slate-50/50">
       {/* Header */}
-      <header className="border-b-4 border-black bg-rose-600 text-white p-6 flex items-center justify-between">
+      <header className="border-b border-rose-500 bg-rose-600 text-white p-6 flex items-center justify-between shadow-xs">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">ZEVOTE PANEL</h1>
           <p className="font-semibold text-rose-100 mt-0.5">Kontrol Pemilihan Ketua OSIS Terpusat</p>
         </div>
         <button
           onClick={handleLogout}
-          className="px-4 py-2 bg-black border-2 border-white hover:bg-zinc-800 text-white font-bold text-sm tracking-wider uppercase transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-rose-750 hover:bg-rose-800 text-white font-semibold text-sm rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer"
         >
           <LogOut className="w-4 h-4" /> Keluar
         </button>
@@ -494,43 +494,43 @@ export default function AdminDashboard() {
       {/* Main Grid Layout */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-5">
         {/* Navigation Sidebar */}
-        <nav className="md:col-span-1 border-r-4 border-b-4 md:border-b-0 border-black p-6 bg-zinc-50 flex flex-col space-y-4">
+        <nav className="md:col-span-1 border-r border-slate-200 p-6 bg-slate-50 flex flex-col space-y-2">
           <button
             onClick={() => setActiveTab("status")}
-            className={`w-full py-3 px-4 text-left font-bold border-2 border-black flex items-center gap-3 transition-all ${
+            className={`w-full py-2.5 px-4 text-left font-semibold rounded-xl flex items-center gap-3 transition-all cursor-pointer text-sm ${
               activeTab === "status"
-                ? "bg-black text-white translate-x-1 shadow-[2px_2px_0px_0px_#e11d48]"
-                : "bg-white text-black hover:bg-zinc-100"
+                ? "bg-rose-600 text-white shadow-sm shadow-rose-600/10"
+                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
             <Settings className="w-5 h-5" /> Status & Kontrol
           </button>
           <button
             onClick={() => setActiveTab("candidates")}
-            className={`w-full py-3 px-4 text-left font-bold border-2 border-black flex items-center gap-3 transition-all ${
+            className={`w-full py-2.5 px-4 text-left font-semibold rounded-xl flex items-center gap-3 transition-all cursor-pointer text-sm ${
               activeTab === "candidates"
-                ? "bg-black text-white translate-x-1 shadow-[2px_2px_0px_0px_#e11d48]"
-                : "bg-white text-black hover:bg-zinc-100"
+                ? "bg-rose-600 text-white shadow-sm shadow-rose-600/10"
+                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
             <Users className="w-5 h-5" /> Kelola Kandidat
           </button>
           <button
             onClick={() => setActiveTab("students")}
-            className={`w-full py-3 px-4 text-left font-bold border-2 border-black flex items-center gap-3 transition-all ${
+            className={`w-full py-2.5 px-4 text-left font-semibold rounded-xl flex items-center gap-3 transition-all cursor-pointer text-sm ${
               activeTab === "students"
-                ? "bg-black text-white translate-x-1 shadow-[2px_2px_0px_0px_#e11d48]"
-                : "bg-white text-black hover:bg-zinc-100"
+                ? "bg-rose-600 text-white shadow-sm shadow-rose-600/10"
+                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
             <UserCheck className="w-5 h-5" /> Kelola Siswa
           </button>
           <button
             onClick={() => setActiveTab("logs")}
-            className={`w-full py-3 px-4 text-left font-bold border-2 border-black flex items-center gap-3 transition-all ${
+            className={`w-full py-2.5 px-4 text-left font-semibold rounded-xl flex items-center gap-3 transition-all cursor-pointer text-sm ${
               activeTab === "logs"
-                ? "bg-black text-white translate-x-1 shadow-[2px_2px_0px_0px_#e11d48]"
-                : "bg-white text-black hover:bg-zinc-100"
+                ? "bg-rose-600 text-white shadow-sm shadow-rose-600/10"
+                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
             <FileSpreadsheet className="w-5 h-5" /> Log Audit
@@ -538,12 +538,12 @@ export default function AdminDashboard() {
         </nav>
 
         {/* Content Pane */}
-        <main className="md:col-span-4 p-8 overflow-y-auto">
+        <main className="md:col-span-4 p-8 overflow-y-auto bg-slate-50/30">
           {/* Global Alert Notification */}
           {alert && (
             <div
-              className={`mb-6 p-4 border-2 border-black font-bold flex items-center gap-3 ${
-                alert.type === "success" ? "bg-green-50 text-green-700" : "bg-rose-50 text-rose-700"
+              className={`mb-6 p-4 border rounded-2xl font-semibold flex items-center gap-3 shadow-xs ${
+                alert.type === "success" ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-rose-50 border-rose-100 text-rose-700"
               }`}
             >
               {alert.type === "success" ? <CheckCircle2 className="w-6 h-6" /> : <AlertTriangle className="w-6 h-6" />}
@@ -554,18 +554,18 @@ export default function AdminDashboard() {
           {/* ------------------ TAB 1: STATUS & CONTROL ------------------ */}
           {activeTab === "status" && (
             <div className="space-y-8">
-              <div className="neo-box p-6 bg-white">
-                <h2 className="text-2xl font-black mb-4 uppercase tracking-wide">Status Pemilihan Sekarang</h2>
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+                <h2 className="text-xl font-bold text-slate-900 mb-4 uppercase tracking-wide">Status Pemilihan Sekarang</h2>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex items-center gap-3">
-                    <span className="font-bold uppercase">Status:</span>
+                    <span className="font-semibold text-slate-600 text-sm uppercase">Status:</span>
                     <span
-                      className={`px-4 py-1.5 border-2 border-black font-black text-sm uppercase tracking-wider ${
+                      className={`px-3 py-1 font-bold text-xs uppercase tracking-wider rounded-full ${
                         setting?.election_status === "OPEN"
-                          ? "bg-green-500 text-white"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : setting?.election_status === "CLOSED"
-                          ? "bg-black text-white"
-                          : "bg-yellow-400 text-black"
+                          ? "bg-slate-900 text-white border border-slate-800"
+                          : "bg-amber-50 text-amber-700 border border-amber-200"
                       }`}
                     >
                       {setting?.election_status || "DRAFT"}
@@ -576,7 +576,7 @@ export default function AdminDashboard() {
                     {setting?.election_status === "DRAFT" && (
                       <button
                         onClick={() => updateElectionStatus("OPEN")}
-                        className="px-6 py-2 neo-btn-primary bg-green-600 hover:bg-green-700 text-sm"
+                        className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 border border-emerald-600 hover:border-emerald-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer hover:shadow-emerald-600/10"
                       >
                         Buka Pemilihan
                       </button>
@@ -584,7 +584,7 @@ export default function AdminDashboard() {
                     {setting?.election_status === "OPEN" && (
                       <button
                         onClick={() => updateElectionStatus("CLOSED")}
-                        className="px-6 py-2 neo-btn-primary bg-black hover:bg-zinc-800 text-sm"
+                        className="px-6 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-900 hover:border-slate-800 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer"
                       >
                         Tutup Pemilihan
                       </button>
@@ -592,7 +592,7 @@ export default function AdminDashboard() {
                     {setting?.election_status === "CLOSED" && (
                       <button
                         onClick={() => updateElectionStatus("OPEN")}
-                        className="px-6 py-2 neo-btn-primary bg-blue-600 hover:bg-blue-700 text-sm"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 border border-blue-600 hover:border-blue-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer hover:shadow-blue-600/10"
                       >
                         Buka Kembali Pemilihan
                       </button>
@@ -602,18 +602,21 @@ export default function AdminDashboard() {
               </div>
 
               {/* Reset Control */}
-              <div className="neo-box p-6 border-rose-600 bg-rose-50">
+              <div className="border border-rose-100 bg-rose-50/50 rounded-2xl p-6 shadow-xs">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-rose-100 border-2 border-rose-600">
+                  <div className="p-3 bg-rose-100/60 rounded-xl border border-rose-200">
                     <AlertTriangle className="w-8 h-8 text-rose-600" />
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-xl font-black text-rose-800 uppercase tracking-wide">Reset Total Pemilihan</h3>
+                    <h3 className="text-lg font-bold text-rose-800 uppercase tracking-wide">Reset Total Pemilihan</h3>
                     <p className="text-rose-700 text-sm font-medium leading-relaxed">
                       Tindakan ini akan menghapus semua perolehan suara kandidat dan menghapus status kehadiran siswa
                       sehingga pemilihan dapat diulang dari awal. Data kandidat dan data siswa tidak akan terhapus.
                     </p>
-                    <button onClick={resetElection} className="px-6 py-2.5 neo-btn-primary bg-rose-600 hover:bg-rose-700 text-sm">
+                    <button
+                      onClick={resetElection}
+                      className="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 border border-rose-600 hover:border-rose-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-rose-600/15 cursor-pointer"
+                    >
                       Reset Semua Suara & Status Kehadiran
                     </button>
                   </div>
@@ -627,51 +630,51 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Form Add/Edit */}
               <div className="lg:col-span-1">
-                <div className="neo-box p-6 bg-white sticky top-6">
-                  <h2 className="text-2xl font-black mb-6 uppercase tracking-wide">
+                <div className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6 sticky top-6">
+                  <h2 className="text-xl font-bold text-slate-900 mb-6 uppercase tracking-wide">
                     {editingCandidate ? "Edit Kandidat" : "Tambah Kandidat"}
                   </h2>
 
                   {candidateError && (
-                    <div className="mb-4 p-3 border-2 border-black bg-rose-50 text-rose-700 font-bold text-xs">
+                    <div className="mb-4 p-3 border border-rose-100 rounded-xl bg-rose-50/50 text-rose-700 font-semibold text-xs">
                       {candidateError}
                     </div>
                   )}
 
                   <form onSubmit={handleCandidateSubmit} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">Nomor Urut</label>
+                      <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nomor Urut</label>
                       <input
                         type="number"
                         min="1"
                         value={candidateForm.nomor_urut}
                         onChange={(e) => setCandidateForm({ ...candidateForm, nomor_urut: e.target.value })}
                         required
-                        className="w-full neo-input text-sm rounded-none"
+                        className="w-full neo-input text-sm rounded-xl"
                         placeholder="1, 2, atau 3"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">Nama Kandidat</label>
+                      <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nama Kandidat</label>
                       <input
                         type="text"
                         value={candidateForm.nama}
                         onChange={(e) => setCandidateForm({ ...candidateForm, nama: e.target.value })}
                         required
-                        className="w-full neo-input text-sm rounded-none"
+                        className="w-full neo-input text-sm rounded-xl"
                         placeholder="Nama Lengkap Kandidat"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">URL Foto (Opsional)</label>
+                      <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">URL Foto (Opsional)</label>
                       <input
                         type="text"
                         value={candidateForm.foto_url}
                         onChange={(e) => setCandidateForm({ ...candidateForm, foto_url: e.target.value })}
-                        className="w-full neo-input text-sm rounded-none mb-3"
+                        className="w-full neo-input text-sm rounded-xl mb-3"
                         placeholder="/images/kandidat1.jpg"
                       />
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">Atau Unggah Foto Baru</label>
+                      <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Atau Unggah Foto Baru</label>
                       <input
                         type="file"
                         accept="image/*"
@@ -698,12 +701,15 @@ export default function AdminDashboard() {
                             triggerAlert("error", "Kesalahan koneksi saat mengunggah foto.");
                           }
                         }}
-                        className="w-full bg-slate-50 border-2 border-black p-2 text-xs font-bold focus:outline-none"
+                        className="w-full bg-slate-55 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all text-slate-800"
                       />
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <button type="submit" className="flex-1 py-2 neo-btn-primary text-xs">
+                      <button
+                        type="submit"
+                        className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 border border-rose-600 text-white font-semibold rounded-xl text-xs shadow-sm hover:shadow-md hover:shadow-rose-600/15 transition-all cursor-pointer"
+                      >
                         {editingCandidate ? "Simpan Perubahan" : "Tambah"}
                       </button>
                       {editingCandidate && (
@@ -713,7 +719,7 @@ export default function AdminDashboard() {
                             setCandidateForm({ id: "", nomor_urut: "", nama: "", foto_url: "" });
                             setEditingCandidate(false);
                           }}
-                          className="px-4 py-2 neo-btn-secondary text-xs"
+                          className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs shadow-sm hover:shadow-md transition-all cursor-pointer"
                         >
                           Batal
                         </button>
@@ -725,16 +731,18 @@ export default function AdminDashboard() {
 
               {/* Grid List */}
               <div className="lg:col-span-2">
-                <h2 className="text-2xl font-black mb-6 uppercase tracking-wide">Daftar Kandidat</h2>
+                <h2 className="text-xl font-bold text-slate-900 mb-6 uppercase tracking-wide">Daftar Kandidat</h2>
                 {candidates.length === 0 ? (
-                  <div className="neo-box p-8 text-center text-gray-500 font-bold">Belum ada kandidat terdaftar.</div>
+                  <div className="border border-slate-200 rounded-2xl p-8 text-center text-slate-500 font-semibold bg-white shadow-sm">
+                    Belum ada kandidat terdaftar.
+                  </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {candidates.map((c) => (
-                      <div key={c.id} className="neo-box p-6 bg-white flex flex-col justify-between">
+                      <div key={c.id} className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
                         <div>
                           {/* Photo Placeholder/Visual */}
-                          <div className="w-full aspect-video border-2 border-black bg-zinc-100 flex items-center justify-center overflow-hidden mb-4 rounded-none">
+                          <div className="w-full aspect-video border border-slate-200 bg-slate-55 flex items-center justify-center overflow-hidden mb-4 rounded-xl shadow-xs">
                             {c.foto_url ? (
                               /* eslint-disable-next-line @next/next/no-img-element */
                               <img src={c.foto_url} alt={c.nama} className="w-full h-full object-cover" />
@@ -743,23 +751,23 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           <div className="flex items-center gap-3 mb-2">
-                            <span className="w-8 h-8 rounded-none border-2 border-black bg-black text-white font-black flex items-center justify-center text-sm">
+                            <span className="w-8 h-8 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-sm">
                               {c.nomor_urut}
                             </span>
-                            <h3 className="font-extrabold text-lg truncate uppercase">{c.nama}</h3>
+                            <h3 className="font-extrabold text-slate-800 text-base truncate uppercase">{c.nama}</h3>
                           </div>
                         </div>
 
-                        <div className="flex border-t-2 border-black pt-4 mt-4 gap-2">
+                        <div className="flex border-t border-slate-100 pt-4 mt-4 gap-2">
                           <button
                             onClick={() => handleEditCandidate(c)}
-                            className="flex-1 py-1.5 neo-btn-secondary text-xs flex items-center justify-center gap-1.5"
+                            className="flex-1 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
                           >
                             <Edit3 className="w-3.5 h-3.5" /> Edit
                           </button>
                           <button
                             onClick={() => handleDeleteCandidate(c.id, c.nama)}
-                            className="px-3 py-1.5 neo-btn-primary bg-rose-600 hover:bg-rose-700 text-xs flex items-center justify-center"
+                            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 border border-rose-600 text-white rounded-xl text-xs flex items-center justify-center transition-all cursor-pointer shadow-xs hover:shadow-md hover:shadow-rose-600/15"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -778,16 +786,16 @@ export default function AdminDashboard() {
               {/* Student Input Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Import Box */}
-                <div className="neo-box p-6 bg-white">
-                  <h2 className="text-2xl font-black mb-4 uppercase tracking-wide">Import Data Siswa secara Massal</h2>
-                  <p className="text-gray-500 font-medium text-sm mb-6">
+                <div className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4 uppercase tracking-wide">Import Data Siswa secara Massal</h2>
+                  <p className="text-slate-500 font-medium text-sm mb-6">
                     Unggah berkas CSV yang berisi daftar siswa. Berkas wajib memiliki kolom/header: **Nama** dan **Kelas**.
                   </p>
 
                   {importStatus.message && (
                     <div
-                      className={`mb-6 p-4 border-2 border-black font-bold text-sm ${
-                        importStatus.success ? "bg-green-50 text-green-700" : "bg-rose-50 text-rose-700"
+                      className={`mb-6 p-4 border rounded-xl font-semibold text-sm shadow-xs ${
+                        importStatus.success ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-rose-50 border-rose-100 text-rose-700"
                       }`}
                     >
                       {importStatus.message}
@@ -796,9 +804,9 @@ export default function AdminDashboard() {
 
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                     {/* File Input */}
-                    <label className="flex-1 neo-box p-4 bg-zinc-50 border-dashed border-gray-400 flex flex-col items-center justify-center cursor-pointer hover:bg-zinc-100 transition-colors">
-                      <Upload className="w-8 h-8 text-gray-500 mb-2" />
-                      <span className="font-bold text-sm text-black">Pilih Berkas CSV</span>
+                    <label className="flex-1 border border-dashed border-slate-300 rounded-2xl p-4 bg-slate-55/50 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100/50 hover:border-slate-400 transition-all shadow-xs">
+                      <Upload className="w-8 h-8 text-slate-400 mb-2" />
+                      <span className="font-bold text-sm text-slate-700">Pilih Berkas CSV</span>
                       <input
                         type="file"
                         accept=".csv"
@@ -816,10 +824,10 @@ export default function AdminDashboard() {
                           id="overwrite"
                           checked={importOverwrite}
                           onChange={(e) => setImportOverwrite(e.target.checked)}
-                          className="w-5 h-5 border-2 border-black accent-rose-600 rounded-none cursor-pointer"
+                          className="w-4 h-4 border border-slate-300 accent-rose-600 rounded-sm cursor-pointer"
                           disabled={importStatus.loading}
                         />
-                        <label htmlFor="overwrite" className="font-bold text-sm cursor-pointer select-none">
+                        <label htmlFor="overwrite" className="font-semibold text-xs text-slate-650 cursor-pointer select-none">
                           Hapus siswa lama & timpa baru (Overwrite)
                         </label>
                       </div>
@@ -827,7 +835,7 @@ export default function AdminDashboard() {
                       <button
                         onClick={handleImportSubmit}
                         disabled={csvPreview.length === 0 || importStatus.loading}
-                        className="w-full py-3 neo-btn-primary bg-black hover:bg-zinc-800 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+                        className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm hover:shadow-md"
                       >
                         {importStatus.loading
                           ? "Mengimpor..."
@@ -838,29 +846,29 @@ export default function AdminDashboard() {
 
                   {/* CSV Preview */}
                   {csvPreview.length > 0 && (
-                    <div className="mt-6 border-2 border-black max-h-48 overflow-y-auto">
+                    <div className="mt-6 border border-slate-200 rounded-xl overflow-hidden max-h-48 overflow-y-auto shadow-xs bg-white">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="bg-zinc-100 border-b-2 border-black font-bold text-xs uppercase">
-                            <th className="p-3 border-r-2 border-black">No</th>
-                            <th className="p-3 border-r-2 border-black">Nama</th>
+                          <tr className="bg-slate-50 border-b border-slate-200 font-bold text-xs text-slate-500 uppercase">
+                            <th className="p-3 border-r border-slate-200">No</th>
+                            <th className="p-3 border-r border-slate-200">Nama</th>
                             <th className="p-3">Kelas</th>
                           </tr>
                         </thead>
-                        <tbody className="text-sm font-medium">
+                        <tbody className="text-sm font-medium text-slate-700">
                           {csvPreview.slice(0, 50).map((row, idx) => (
-                            <tr key={idx} className="border-b border-gray-200">
-                              <td className="p-2 border-r-2 border-black bg-zinc-50 font-bold text-xs text-center">
+                            <tr key={idx} className="border-b border-slate-100">
+                              <td className="p-2 border-r border-slate-200 bg-slate-50 font-semibold text-xs text-center text-slate-500">
                                 {idx + 1}
                               </td>
-                              <td className="p-2 border-r-2 border-black">{row.nama}</td>
+                              <td className="p-2 border-r border-slate-200">{row.nama}</td>
                               <td className="p-2">{row.kelas}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                       {csvPreview.length > 50 && (
-                        <div className="p-3 bg-zinc-50 text-center text-xs font-bold text-gray-500 border-t border-black">
+                        <div className="p-3 bg-slate-50 text-center text-xs font-semibold text-slate-500 border-t border-slate-200">
                           Dan {csvPreview.length - 50} data siswa lainnya...
                         </div>
                       )}
@@ -869,16 +877,16 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Manual Input Box */}
-                <div className="neo-box p-6 bg-white">
-                  <h2 className="text-2xl font-black mb-4 uppercase tracking-wide">Input Siswa secara Manual</h2>
-                  <p className="text-gray-500 font-medium text-sm mb-6">
+                <div className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4 uppercase tracking-wide">Input Siswa secara Manual</h2>
+                  <p className="text-slate-500 font-medium text-sm mb-6">
                     Tambahkan data siswa satu per satu secara langsung ke dalam database pemilihan.
                   </p>
 
                   {manualStatus.message && (
                     <div
-                      className={`mb-6 p-4 border-2 border-black font-bold text-sm ${
-                        manualStatus.success ? "bg-green-50 text-green-700" : "bg-rose-50 text-rose-700"
+                      className={`mb-6 p-4 border rounded-xl font-semibold text-sm shadow-xs ${
+                        manualStatus.success ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-rose-50 border-rose-100 text-rose-700"
                       }`}
                     >
                       {manualStatus.message}
@@ -887,25 +895,25 @@ export default function AdminDashboard() {
 
                   <form onSubmit={handleManualStudentSubmit} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">Nama Siswa</label>
+                      <label className="block text-xs font-bold text-slate-650 uppercase tracking-wider mb-1">Nama Siswa</label>
                       <input
                         type="text"
                         value={manualStudent.nama}
                         onChange={(e) => setManualStudent({ ...manualStudent, nama: e.target.value })}
                         required
-                        className="w-full neo-input text-sm rounded-none"
+                        className="w-full neo-input text-sm rounded-xl"
                         placeholder="Contoh: Juki Sadikin"
                         disabled={manualStatus.loading}
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-1">Kelas</label>
+                      <label className="block text-xs font-bold text-slate-655 uppercase tracking-wider mb-1">Kelas</label>
                       <input
                         type="text"
                         value={manualStudent.kelas}
                         onChange={(e) => setManualStudent({ ...manualStudent, kelas: e.target.value })}
                         required
-                        className="w-full neo-input text-sm rounded-none"
+                        className="w-full neo-input text-sm rounded-xl"
                         placeholder="Contoh: XII-RPL-1"
                         disabled={manualStatus.loading}
                       />
@@ -914,7 +922,7 @@ export default function AdminDashboard() {
                     <button
                       type="submit"
                       disabled={manualStatus.loading || !manualStudent.nama || !manualStudent.kelas}
-                      className="w-full py-3 neo-btn-primary bg-black hover:bg-zinc-800 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+                      className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm hover:shadow-md"
                     >
                       {manualStatus.loading ? "Menyimpan..." : "Tambah Siswa"}
                     </button>
@@ -923,9 +931,9 @@ export default function AdminDashboard() {
               </div>
 
               {/* Student Database List */}
-              <div className="neo-box p-6 bg-white">
+              <div className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <h2 className="text-2xl font-black uppercase tracking-wide">Daftar Data Siswa ({totalStudentsCount})</h2>
+                  <h2 className="text-xl font-bold text-slate-900 uppercase tracking-wide">Daftar Data Siswa ({totalStudentsCount})</h2>
 
                   <form onSubmit={handleStudentSearch} className="flex gap-2 w-full sm:max-w-md">
                     <input
@@ -933,40 +941,40 @@ export default function AdminDashboard() {
                       placeholder="Cari nama atau kelas..."
                       value={studentSearch}
                       onChange={(e) => setStudentSearch(e.target.value)}
-                      className="flex-1 neo-input text-sm rounded-none"
+                      className="flex-1 neo-input text-sm rounded-xl"
                     />
-                    <button type="submit" className="px-4 py-2 neo-btn-primary bg-black text-white hover:bg-zinc-800 flex items-center justify-center">
+                    <button type="submit" className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 font-semibold rounded-xl flex items-center justify-center transition-all cursor-pointer shadow-sm hover:shadow-md">
                       <Search className="w-4 h-4" />
                     </button>
                   </form>
                 </div>
 
                 {students.length === 0 ? (
-                  <div className="p-8 text-center text-gray-500 font-bold border-2 border-black border-dashed">
+                  <div className="p-8 text-center text-slate-400 font-semibold border border-dashed border-slate-200 rounded-2xl bg-slate-50/55">
                     Tidak ditemukan data siswa.
                   </div>
                 ) : (
-                  <div className="border-2 border-black overflow-x-auto">
+                  <div className="border border-slate-100 rounded-xl overflow-hidden overflow-x-auto shadow-xs bg-white">
                     <table className="w-full text-left border-collapse min-w-[600px]">
                       <thead>
-                        <tr className="bg-black text-white font-bold text-xs uppercase tracking-wider">
-                          <th className="p-3 border-r border-zinc-700">Nama</th>
-                          <th className="p-3 border-r border-zinc-700">Kelas</th>
-                          <th className="p-3 border-r border-zinc-700 text-center">Hadir</th>
+                        <tr className="bg-slate-50/75 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                          <th className="p-3 border-r border-slate-200/60">Nama</th>
+                          <th className="p-3 border-r border-slate-200/60">Kelas</th>
+                          <th className="p-3 border-r border-slate-200/60 text-center">Hadir</th>
                           <th className="p-3 text-center">Sudah Voting</th>
                         </tr>
                       </thead>
-                      <tbody className="text-sm font-medium">
+                      <tbody className="text-sm font-medium text-slate-700">
                         {students.map((student) => (
-                          <tr key={student.id} className="border-b-2 border-black hover:bg-zinc-50">
-                            <td className="p-3 border-r border-black font-extrabold">{student.nama}</td>
-                            <td className="p-3 border-r border-black">{student.kelas}</td>
-                            <td className="p-3 border-r border-black text-center">
+                          <tr key={student.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                            <td className="p-3 border-r border-slate-100 font-bold text-slate-900">{student.nama}</td>
+                            <td className="p-3 border-r border-slate-100">{student.kelas}</td>
+                            <td className="p-3 border-r border-slate-100 text-center">
                               <span
-                                className={`inline-flex px-2 py-0.5 border font-bold text-xs uppercase ${
+                                className={`inline-flex px-2.5 py-0.5 border rounded-full font-semibold text-[10px] uppercase ${
                                   student.hadir
-                                    ? "bg-green-100 border-green-600 text-green-700"
-                                    : "bg-gray-100 border-gray-400 text-gray-600"
+                                    ? "bg-emerald-50 border-emerald-100 text-emerald-700"
+                                    : "bg-slate-100 border-slate-200 text-slate-600"
                                 }`}
                               >
                                 {student.hadir ? "YA" : "TIDAK"}
@@ -974,10 +982,10 @@ export default function AdminDashboard() {
                             </td>
                             <td className="p-3 text-center">
                               <span
-                                className={`inline-flex px-2 py-0.5 border font-bold text-xs uppercase ${
+                                className={`inline-flex px-2.5 py-0.5 border rounded-full font-semibold text-[10px] uppercase ${
                                   student.sudah_memilih
-                                    ? "bg-rose-100 border-rose-600 text-rose-700"
-                                    : "bg-gray-100 border-gray-400 text-gray-600"
+                                    ? "bg-rose-50 border-rose-100 text-rose-700"
+                                    : "bg-slate-100 border-slate-200 text-slate-600"
                                 }`}
                               >
                                 {student.sudah_memilih ? "SUDAH" : "BELUM"}
@@ -1000,11 +1008,11 @@ export default function AdminDashboard() {
                         fetchStudents(prev);
                       }}
                       disabled={studentPage === 1}
-                      className="px-4 py-2 neo-btn-secondary text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs shadow-xs hover:shadow-md transition-all cursor-pointer disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed"
                     >
                       Sebelumnya
                     </button>
-                    <span className="font-bold text-sm">
+                    <span className="font-semibold text-sm text-slate-600">
                       Halaman {studentPage} dari {studentTotalPages}
                     </span>
                     <button
@@ -1014,7 +1022,7 @@ export default function AdminDashboard() {
                         fetchStudents(next);
                       }}
                       disabled={studentPage === studentTotalPages}
-                      className="px-4 py-2 neo-btn-secondary text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs shadow-xs hover:shadow-md transition-all cursor-pointer disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed"
                     >
                       Selanjutnya
                     </button>
@@ -1026,32 +1034,32 @@ export default function AdminDashboard() {
 
           {/* ------------------ TAB 4: AUDIT LOGS ------------------ */}
           {activeTab === "logs" && (
-            <div className="neo-box p-6 bg-white">
-              <h2 className="text-2xl font-black mb-6 uppercase tracking-wide">Log Audit Aktivitas (100 Terakhir)</h2>
+            <div className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-6 uppercase tracking-wide">Log Audit Aktivitas (100 Terakhir)</h2>
               {logs.length === 0 ? (
-                <div className="p-8 text-center text-gray-500 font-bold border-2 border-black border-dashed">
+                <div className="p-8 text-center text-slate-400 font-semibold border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
                   Belum ada catatan aktivitas.
                 </div>
               ) : (
-                <div className="border-2 border-black overflow-x-auto max-h-[600px] overflow-y-auto">
+                <div className="border border-slate-100 rounded-xl overflow-hidden overflow-x-auto max-h-[600px] overflow-y-auto shadow-xs bg-white">
                   <table className="w-full text-left border-collapse min-w-[500px]">
                     <thead>
-                      <tr className="bg-black text-white font-bold text-xs uppercase tracking-wider sticky top-0">
-                        <th className="p-3 border-r border-zinc-700">Waktu</th>
-                        <th className="p-3 border-r border-zinc-700">Aktor</th>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-505 uppercase tracking-wider sticky top-0">
+                        <th className="p-3 border-r border-slate-200/60">Waktu</th>
+                        <th className="p-3 border-r border-slate-200/60">Aktor</th>
                         <th className="p-3">Aktivitas</th>
                       </tr>
                     </thead>
-                    <tbody className="text-sm font-medium">
+                    <tbody className="text-sm font-medium text-slate-700">
                       {logs.map((log) => (
-                        <tr key={log.id} className="border-b border-gray-200 hover:bg-zinc-50">
-                          <td className="p-3 border-r border-gray-200 text-xs text-gray-500 font-mono">
+                        <tr key={log.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r border-slate-100 text-xs text-slate-500 font-mono">
                             {new Date(log.created_at).toLocaleString("id-ID")}
                           </td>
-                          <td className="p-3 border-r border-gray-200 font-bold text-rose-600 text-xs tracking-wider uppercase">
+                          <td className="p-3 border-r border-slate-100 font-semibold text-rose-600 text-xs tracking-wider uppercase">
                             {log.actor}
                           </td>
-                          <td className="p-3 text-black font-semibold">{log.action}</td>
+                          <td className="p-3 text-slate-700 font-medium">{log.action}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1063,23 +1071,20 @@ export default function AdminDashboard() {
         </main>
       </div>
 
-      {/* CUSTOM CONFIRM MODAL (NEO-BRUTALIST) */}
+      {/* CUSTOM CONFIRM MODAL (MODERN CLEAN) */}
       {confirmModal.isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div
-            className="bg-white border-4 border-black w-full max-w-md p-6 relative text-black animate-scale-up"
-            style={{ boxShadow: "8px 8px 0px 0px #000" }}
-          >
-            <h3 className="text-2xl font-black uppercase tracking-wide text-black mb-3">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-100 rounded-2xl shadow-xl w-full max-w-md p-6 relative text-slate-900 animate-scale-up">
+            <h3 className="text-xl font-bold uppercase tracking-tight text-slate-955 mb-2">
               {confirmModal.title}
             </h3>
-            <p className="text-slate-600 font-semibold text-sm mb-6 whitespace-pre-line">
+            <p className="text-slate-650 font-medium text-sm mb-6 whitespace-pre-line">
               {confirmModal.message}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}
-                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-black border-2 border-black font-black uppercase text-xs tracking-wider transition-colors"
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold uppercase text-xs tracking-wider transition-all cursor-pointer"
               >
                 Batal
               </button>
@@ -1088,8 +1093,8 @@ export default function AdminDashboard() {
                   if (confirmModal.onConfirm) confirmModal.onConfirm();
                   setConfirmModal({ ...confirmModal, isOpen: false });
                 }}
-                className={`flex-1 py-3 border-2 border-black font-black uppercase text-xs tracking-wider transition-colors text-white ${
-                  confirmModal.isDanger ? "bg-rose-600 hover:bg-rose-700" : "bg-emerald-600 hover:bg-emerald-700"
+                className={`flex-1 py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider transition-all text-white shadow-sm cursor-pointer ${
+                  confirmModal.isDanger ? "bg-rose-600 hover:bg-rose-700 shadow-rose-200" : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200"
                 }`}
               >
                 Ya, Lanjutkan

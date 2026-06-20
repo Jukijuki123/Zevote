@@ -99,7 +99,6 @@ export default function VotingBoothPage() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     if (query.length < 2) {
-      setResults([]);
       return;
     }
 
@@ -217,19 +216,21 @@ export default function VotingBoothPage() {
   // ========================
   return (
     <FullscreenGuard enabled={true}>
-      <div className="min-h-screen flex flex-col bg-zinc-950 text-white overflow-hidden">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 overflow-hidden">
         {/* Header */}
-        <header className="relative border-b-4 border-rose-600 bg-black py-6 px-8 flex items-center justify-between">
+        <header className="relative border-b border-slate-200 bg-white py-6 px-8 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-rose-600 border-3 border-white flex items-center justify-center font-black text-xl">Z</div>
+            <div className="w-10 h-10 bg-rose-600 rounded-xl flex items-center justify-center font-bold text-white text-lg shadow-sm shadow-rose-200">
+              Z
+            </div>
             <div>
-              <h1 className="text-2xl font-black tracking-widest uppercase">ZEVOTE</h1>
-              <p className="text-rose-400 text-xs font-semibold tracking-wider">E-VOTING OSIS TPS DIGITAL</p>
+              <h1 className="text-xl font-bold tracking-wide text-slate-900">ZEVOTE</h1>
+              <p className="text-rose-600 text-[10px] font-bold tracking-wider uppercase">E-VOTING OSIS TPS DIGITAL</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-green-400 font-bold text-sm uppercase tracking-wider">Pemilihan Aktif</span>
+            <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Pemilihan Aktif</span>
           </div>
         </header>
 
@@ -238,28 +239,28 @@ export default function VotingBoothPage() {
 
           {/* STATE: Login (search + confirm) */}
           {(pageState === "login" || pageState === "submitting") && (
-            <div className="w-full max-w-lg">
+            <div className="w-full max-w-lg bg-white border border-slate-200 p-8 rounded-2xl shadow-md">
               {/* Title Card */}
-              <div className="text-center mb-10">
-                <div className="inline-block p-4 bg-rose-600 border-4 border-white mb-4" style={{ boxShadow: "6px 6px 0px 0px rgba(255,255,255,0.2)" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <div className="text-center mb-8">
+                <div className="inline-flex p-4 bg-rose-50 rounded-2xl mb-4 border border-rose-100 shadow-sm text-rose-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
-                <h2 className="text-3xl font-black uppercase tracking-wider text-white">Identifikasi Pemilih</h2>
-                <p className="text-zinc-400 font-medium mt-2">Cari nama kamu untuk memulai proses voting</p>
+                <h2 className="text-2xl font-bold tracking-wide text-slate-900 uppercase">Identifikasi Pemilih</h2>
+                <p className="text-slate-500 font-medium text-sm mt-1">Cari nama kamu untuk memulai proses voting</p>
               </div>
 
               {/* Error Message */}
               {errorMsg && (
-                <div className="mb-6 p-4 bg-rose-900/60 border-2 border-rose-500 text-rose-300 font-bold text-sm">
+                <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl font-semibold text-sm">
                   ⚠ {errorMsg}
                 </div>
               )}
 
               {/* Search Box */}
               <div className="relative mb-6">
-                <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
                   Ketik Nama Kamu
                 </label>
                 <div className="relative">
@@ -269,10 +270,14 @@ export default function VotingBoothPage() {
                     type="text"
                     value={query}
                     onChange={(e) => {
-                      setQuery(e.target.value);
+                      const val = e.target.value;
+                      setQuery(val);
                       setSelectedStudent(null);
+                      if (val.length < 2) {
+                        setResults([]);
+                      }
                     }}
-                    className="w-full bg-zinc-900 border-3 border-zinc-600 focus:border-rose-500 text-white placeholder-zinc-600 px-5 py-4 text-lg font-semibold focus:outline-none transition-colors"
+                    className="w-full bg-white border border-slate-200 focus:border-rose-500 text-slate-800 placeholder-slate-400 px-5 py-4 text-base font-semibold rounded-xl focus:ring-4 focus:ring-rose-500/10 focus:outline-none transition-all shadow-sm"
                     placeholder="Contoh: Budi Santoso..."
                     autoComplete="off"
                     disabled={pageState === "submitting"}
@@ -287,21 +292,21 @@ export default function VotingBoothPage() {
 
                 {/* Autocomplete Dropdown */}
                 {results.length > 0 && (
-                  <div className="absolute z-50 w-full mt-1 bg-zinc-900 border-2 border-zinc-600 max-h-64 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-y-auto p-1.5">
                     {results.map((student) => (
                       <button
                         key={student.id}
                         onClick={() => handleSelectStudent(student)}
-                        className="w-full px-5 py-3 text-left hover:bg-zinc-800 transition-colors border-b border-zinc-800 last:border-0 flex items-center justify-between"
+                        className="w-full px-5 py-3 text-left hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0 flex items-center justify-between rounded-lg"
                       >
                         <div>
-                          <p className="font-bold text-white">{student.nama}</p>
-                          <p className="text-zinc-500 text-sm">{student.kelas}</p>
+                          <p className="font-bold text-slate-800">{student.nama}</p>
+                          <p className="text-slate-400 text-sm">{student.kelas}</p>
                         </div>
                         {student.sudah_memilih ? (
-                          <span className="text-xs font-bold text-zinc-500 border border-zinc-600 px-2 py-0.5">VOTED</span>
+                          <span className="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-full">VOTED</span>
                         ) : (
-                          <span className="text-xs font-bold text-green-500 border border-green-600 px-2 py-0.5">BELUM</span>
+                          <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded-full">BELUM</span>
                         )}
                       </button>
                     ))}
@@ -309,7 +314,7 @@ export default function VotingBoothPage() {
                 )}
 
                 {query.length >= 2 && results.length === 0 && !isSearching && (
-                  <div className="absolute z-50 w-full mt-1 bg-zinc-900 border-2 border-zinc-600 p-4 text-center text-zinc-500 font-medium">
+                  <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl p-4 text-center text-slate-400 font-medium text-sm shadow-md">
                     Nama tidak ditemukan. Hubungi panitia.
                   </div>
                 )}
@@ -317,12 +322,12 @@ export default function VotingBoothPage() {
 
               {/* Selected Student Confirmation Card */}
               {selectedStudent && (
-                <div className="mb-6 p-5 bg-zinc-900 border-2 border-green-500" style={{ boxShadow: "4px 4px 0px 0px #22c55e" }}>
-                  <p className="text-xs font-bold uppercase tracking-widest text-green-500 mb-2">✓ Siswa Ditemukan</p>
-                  <p className="text-white font-black text-xl">{selectedStudent.nama}</p>
-                  <p className="text-zinc-400 font-semibold">{selectedStudent.kelas}</p>
+                <div className="mb-6 p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl shadow-sm">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-1">✓ Siswa Ditemukan</p>
+                  <p className="text-slate-800 font-bold text-lg">{selectedStudent.nama}</p>
+                  <p className="text-slate-500 font-medium text-sm">{selectedStudent.kelas}</p>
                   {selectedStudent.sudah_memilih && (
-                    <p className="text-rose-400 font-bold text-sm mt-2">⚠ Kamu sudah pernah memilih.</p>
+                    <p className="text-rose-600 font-bold text-sm mt-2">⚠ Kamu sudah pernah memilih.</p>
                   )}
                 </div>
               )}
@@ -331,12 +336,11 @@ export default function VotingBoothPage() {
               <button
                 onClick={handleSubmitRequest}
                 disabled={!selectedStudent || selectedStudent.sudah_memilih || pageState === "submitting"}
-                className="w-full py-5 text-white font-black text-lg uppercase tracking-widest transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{
-                  background: selectedStudent && !selectedStudent.sudah_memilih ? "#e11d48" : "#374151",
-                  border: "3px solid white",
-                  boxShadow: selectedStudent && !selectedStudent.sudah_memilih ? "5px 5px 0px 0px rgba(255,255,255,0.3)" : "none",
-                }}
+                className={`w-full py-4 font-bold text-base uppercase tracking-widest transition-all rounded-xl shadow-sm ${
+                  selectedStudent && !selectedStudent.sudah_memilih
+                    ? "bg-rose-600 hover:bg-rose-700 text-white hover:scale-[1.01] active:scale-[0.99] shadow-md shadow-rose-100 cursor-pointer"
+                    : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
+                }`}
               >
                 {pageState === "submitting" ? (
                   <span className="flex items-center justify-center gap-3">
@@ -348,7 +352,7 @@ export default function VotingBoothPage() {
                 )}
               </button>
 
-              <p className="text-center text-zinc-600 text-xs mt-4 font-medium">
+              <p className="text-center text-slate-400 text-xs mt-4 font-medium">
                 Pastikan nama yang dipilih adalah namamu sendiri
               </p>
             </div>
@@ -356,43 +360,43 @@ export default function VotingBoothPage() {
 
           {/* STATE: Waiting for Approval */}
           {pageState === "waiting" && (
-            <div className="w-full max-w-md text-center">
+            <div className="w-full max-w-md bg-white border border-slate-200 p-8 rounded-2xl shadow-md text-center">
               {/* Animated Waiting Visual */}
-              <div className="relative w-36 h-36 mx-auto mb-8">
-                <div className="absolute inset-0 rounded-full border-4 border-zinc-700" />
+              <div className="relative w-28 h-28 mx-auto mb-6">
+                <div className="absolute inset-0 rounded-full border-4 border-slate-100" />
                 <div className="absolute inset-0 rounded-full border-4 border-t-rose-500 border-r-transparent border-b-transparent border-l-transparent animate-spin" />
-                <div className="absolute inset-4 rounded-full border-4 border-t-transparent border-r-rose-400 border-b-transparent border-l-transparent animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
+                <div className="absolute inset-3 rounded-full border-4 border-t-transparent border-r-rose-400 border-b-transparent border-l-transparent animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-rose-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
               </div>
 
-              <h2 className="text-3xl font-black uppercase tracking-wider text-white mb-3">
+              <h2 className="text-2xl font-bold uppercase tracking-wider text-slate-900 mb-2">
                 Menunggu Persetujuan
               </h2>
-              <p className="text-zinc-400 font-semibold mb-2">
+              <p className="text-slate-600 font-medium mb-1 text-sm">
                 Permintaanmu sudah diterima oleh sistem.
               </p>
-              <p className="text-zinc-500 text-sm mb-8">
+              <p className="text-slate-400 text-xs mb-6">
                 Panitia akan memverifikasi dan menyetujui akses votingmu. Jangan tinggalkan halaman ini.
               </p>
 
               {selectedStudent && (
-                <div className="p-4 bg-zinc-900 border-2 border-zinc-700 mb-8 text-left">
-                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Menunggu untuk:</p>
-                  <p className="text-white font-black">{selectedStudent.nama}</p>
-                  <p className="text-zinc-400 text-sm">{selectedStudent.kelas}</p>
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl mb-6 text-left">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Menunggu untuk:</p>
+                  <p className="text-slate-800 font-bold">{selectedStudent.nama}</p>
+                  <p className="text-slate-500 text-sm">{selectedStudent.kelas}</p>
                 </div>
               )}
 
               {/* Pulsing dots indicator */}
-              <div className="flex justify-center gap-2 mb-8">
+              <div className="flex justify-center gap-1.5 mb-6">
                 {[0, 1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="w-2 h-2 rounded-full bg-rose-500"
+                    className="w-2 h-2 rounded-full bg-rose-600"
                     style={{ animation: `pulse 1.5s ease-in-out ${i * 0.2}s infinite` }}
                   />
                 ))}
@@ -400,7 +404,7 @@ export default function VotingBoothPage() {
 
               <button
                 onClick={handleReset}
-                className="text-zinc-500 hover:text-zinc-300 text-sm font-semibold underline underline-offset-4 transition-colors"
+                className="text-slate-400 hover:text-slate-600 text-sm font-semibold underline underline-offset-4 transition-colors cursor-pointer"
               >
                 Batal & Kembali
               </button>
@@ -409,18 +413,18 @@ export default function VotingBoothPage() {
 
           {/* STATE: Rejected */}
           {pageState === "rejected" && (
-            <div className="w-full max-w-md text-center">
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-rose-900 border-4 border-rose-500 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-full max-w-md bg-white border border-slate-200 p-8 rounded-2xl shadow-md text-center">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-black uppercase tracking-wider text-rose-400 mb-3">Ditolak</h2>
-              <p className="text-zinc-400 font-semibold mb-2">Permintaanmu ditolak oleh panitia.</p>
-              <p className="text-zinc-500 text-sm mb-8">Hubungi panitia jika kamu merasa ini adalah kesalahan.</p>
+              <h2 className="text-2xl font-bold uppercase tracking-wider text-rose-600 mb-2">Daftar Ditolak</h2>
+              <p className="text-slate-600 font-medium mb-1 text-sm">Permintaanmu ditolak oleh panitia.</p>
+              <p className="text-slate-400 text-xs mb-6">Hubungi panitia jika kamu merasa ini adalah kesalahan.</p>
               <button
                 onClick={handleReset}
-                className="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-black uppercase tracking-wider border-2 border-zinc-600 transition-colors"
+                className="px-8 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold uppercase text-xs tracking-wider rounded-xl transition-all shadow-md shadow-rose-100 cursor-pointer"
               >
                 Coba Lagi
               </button>
@@ -429,17 +433,17 @@ export default function VotingBoothPage() {
 
           {/* STATE: Already Voted */}
           {pageState === "already_voted" && (
-            <div className="w-full max-w-md text-center">
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-zinc-800 border-4 border-zinc-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="w-full max-w-md bg-white border border-slate-200 p-8 rounded-2xl shadow-md text-center">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-black uppercase tracking-wider text-zinc-400 mb-3">Sudah Memilih</h2>
-              <p className="text-zinc-500 font-semibold mb-8">Hak suaramu sudah digunakan. Terima kasih telah berpartisipasi!</p>
+              <h2 className="text-2xl font-bold uppercase tracking-wider text-slate-800 mb-2">Sudah Memilih</h2>
+              <p className="text-slate-500 font-medium mb-6 text-sm">Hak suaramu sudah digunakan. Terima kasih telah berpartisipasi!</p>
               <button
                 onClick={handleReset}
-                className="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-black uppercase tracking-wider border-2 border-zinc-600 transition-colors"
+                className="px-8 py-3 bg-black hover:bg-zinc-800 text-white font-bold uppercase text-xs tracking-wider rounded-xl transition-all shadow-md cursor-pointer"
               >
                 Kembali
               </button>
@@ -448,8 +452,8 @@ export default function VotingBoothPage() {
         </main>
 
         {/* Footer */}
-        <footer className="border-t-2 border-zinc-800 py-4 px-8 text-center">
-          <p className="text-zinc-600 text-xs font-medium">
+        <footer className="border-t border-slate-200 bg-white py-4 px-8 text-center">
+          <p className="text-slate-400 text-xs font-semibold">
             ZEVOTE — Sistem E-Voting OSIS Digital · Aman & Transparan
           </p>
         </footer>
